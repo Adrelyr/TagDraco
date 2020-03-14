@@ -8,7 +8,7 @@ Roadmap :
  - Adding support for editing multiple files at a time
  - Better memory management (i still need to learn how to manage it correctly)
 
-
+*The look is subject to change, but here's how it looks like currently*
 ![The look is subject to change, but here's how it looks like currently
 ](https://github.com/Dreregon/Tag-Draco/blob/master/image.png)
 
