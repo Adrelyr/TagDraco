@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagDraco", "TagDraco\TagDraco.csproj", "{EFB11394-2621-43C0-AA77-60E3F68C9F28}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFB11394-2621-43C0-AA77-60E3F68C9F28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFB11394-2621-43C0-AA77-60E3F68C9F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFB11394-2621-43C0-AA77-60E3F68C9F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFB11394-2621-43C0-AA77-60E3F68C9F28}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34C4C2F3-0C3E-48A4-BD3A-362F4E15B5B6}
+	EndGlobalSection
+EndGlobal
