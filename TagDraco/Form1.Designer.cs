@@ -32,6 +32,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.trackBox = new System.Windows.Forms.TextBox();
@@ -49,9 +52,8 @@
             this.changePicBtn = new System.Windows.Forms.Button();
             this.changeTagsBtn = new System.Windows.Forms.Button();
             this.imageBrowser = new System.Windows.Forms.OpenFileDialog();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label7 = new System.Windows.Forms.Label();
+            this.contArtistsBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -84,12 +86,36 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutToolStripMenuItem.Text = "About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.contArtistsBox);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.trackBox);
             this.groupBox1.Controls.Add(this.label5);
@@ -113,7 +139,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 237);
+            this.label6.Location = new System.Drawing.Point(6, 254);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 11;
@@ -121,7 +147,7 @@
             // 
             // trackBox
             // 
-            this.trackBox.Location = new System.Drawing.Point(6, 253);
+            this.trackBox.Location = new System.Drawing.Point(6, 270);
             this.trackBox.Name = "trackBox";
             this.trackBox.Size = new System.Drawing.Size(297, 20);
             this.trackBox.TabIndex = 10;
@@ -129,7 +155,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 192);
+            this.label5.Location = new System.Drawing.Point(6, 215);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(36, 13);
             this.label5.TabIndex = 9;
@@ -137,7 +163,7 @@
             // 
             // genreBox
             // 
-            this.genreBox.Location = new System.Drawing.Point(6, 208);
+            this.genreBox.Location = new System.Drawing.Point(6, 231);
             this.genreBox.Name = "genreBox";
             this.genreBox.Size = new System.Drawing.Size(297, 20);
             this.genreBox.TabIndex = 8;
@@ -145,7 +171,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 149);
+            this.label4.Location = new System.Drawing.Point(4, 176);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(29, 13);
             this.label4.TabIndex = 7;
@@ -153,7 +179,7 @@
             // 
             // yearBox
             // 
-            this.yearBox.Location = new System.Drawing.Point(6, 165);
+            this.yearBox.Location = new System.Drawing.Point(6, 192);
             this.yearBox.Name = "yearBox";
             this.yearBox.Size = new System.Drawing.Size(297, 20);
             this.yearBox.TabIndex = 6;
@@ -161,7 +187,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 105);
+            this.label3.Location = new System.Drawing.Point(6, 137);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(27, 13);
             this.label3.TabIndex = 5;
@@ -169,7 +195,7 @@
             // 
             // titleBox
             // 
-            this.titleBox.Location = new System.Drawing.Point(6, 121);
+            this.titleBox.Location = new System.Drawing.Point(6, 153);
             this.titleBox.Name = "titleBox";
             this.titleBox.Size = new System.Drawing.Size(297, 20);
             this.titleBox.TabIndex = 4;
@@ -177,7 +203,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 62);
+            this.label2.Location = new System.Drawing.Point(6, 59);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 13);
             this.label2.TabIndex = 3;
@@ -185,7 +211,7 @@
             // 
             // artistBox
             // 
-            this.artistBox.Location = new System.Drawing.Point(6, 78);
+            this.artistBox.Location = new System.Drawing.Point(6, 75);
             this.artistBox.Name = "artistBox";
             this.artistBox.Size = new System.Drawing.Size(297, 20);
             this.artistBox.TabIndex = 2;
@@ -239,27 +265,21 @@
             // 
             this.imageBrowser.FileName = "openFileDialog2";
             // 
-            // clearToolStripMenuItem
+            // label7
             // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
-            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 98);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(94, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Contributing Artists";
             // 
-            // helpToolStripMenuItem
+            // contArtistsBox
             // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.aboutToolStripMenuItem.Text = "About...";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.contArtistsBox.Location = new System.Drawing.Point(6, 114);
+            this.contArtistsBox.Name = "contArtistsBox";
+            this.contArtistsBox.Size = new System.Drawing.Size(297, 20);
+            this.contArtistsBox.TabIndex = 12;
             // 
             // TagDraco
             // 
@@ -313,6 +333,8 @@
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox contArtistsBox;
     }
 }
 

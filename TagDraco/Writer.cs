@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TagLib;
 
 namespace TagDraco
@@ -13,7 +14,7 @@ namespace TagDraco
     class Writer
     {
         const string TEMP_FILE_NAME = "tagDracoTemp.png";
-        public bool SaveMetadataToFile(TagLib.File file, string title, string album, string[] albumArtists, int track, int year, string[] genres, Image picFile)
+        public bool SaveMetadataToFile(TagLib.File file, string title, string album, string[] albumArtists, int track, int year, string[] genres, string[] artists, Image picFile)
         {
             try {
                 Tag tags = file.Tag;
@@ -21,6 +22,7 @@ namespace TagDraco
                 tags.Title = title;
                 tags.Album = album;
                 tags.AlbumArtists = albumArtists;
+                tags.Performers = artists;
                 tags.Track = (uint)track;
                 tags.Genres = genres;
                 tags.Year = (uint)year;
@@ -30,6 +32,7 @@ namespace TagDraco
                 picture[0] = new Picture(fileName);
                 tags.Pictures = picture;
                 file.Save();
+                MessageBox.Show("Tags successfuly updated.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return true;
             }
             catch

@@ -19,7 +19,7 @@ namespace TagDraco
     public partial class TagDraco : Form
     {
         const char COMA = ',';
-        const string VERSION = "1.0.0";
+        const string VERSION = "a1.0.1";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         Reader reader = new Reader();
         Writer writer = new Writer();
@@ -38,18 +38,14 @@ namespace TagDraco
             LoadMetaData();
         }
 
-        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
+        private void BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
-            // BitmapImage bitmapImage = new BitmapImage(new Uri("../Images/test.png", UriKind.Relative));
-
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(bitmapImage));
                 enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                return new Bitmap(bitmap);
+                cover = new System.Drawing.Bitmap(outStream);
             }
         }
 
@@ -80,10 +76,10 @@ namespace TagDraco
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
-            if (!CheckFile()) return;
+            if (CheckFile()) return;
 
             if(!writer.SaveMetadataToFile(reader.GetFile(), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
-                    int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), pictureBox1.Image))
+                    int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), contArtistsBox.Text.Split(COMA), pictureBox1.Image))
             {
                 MessageBox.Show("An error occured while saving the data to the file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -91,7 +87,7 @@ namespace TagDraco
 
         private void changePicBtnPressed(object sender, EventArgs e)
         {
-            if (!CheckFile()) return;
+            if (CheckFile()) return;
             imageBrowser.ShowDialog();
             try
             {
@@ -116,13 +112,18 @@ namespace TagDraco
             albumBox.Text = fileTags.Album;
             foreach (String s in fileTags.AlbumArtists)
             {
-                artistBox.Text = artistBox.Text + s + ",";
+                artistBox.Text = artistBox.Text + s + COMA;
             }
             titleBox.Text = fileTags.Title;
             yearBox.Text = fileTags.Year.ToString();
             genreBox.Text = fileTags.FirstGenre;
             trackBox.Text = fileTags.Track.ToString();
+            foreach (String s in fileTags.Performers)
+            {
+                contArtistsBox.Text = contArtistsBox.Text + s + COMA;
+            }
 
+            try { 
             IPicture p = fileTags.Pictures[0];
             MemoryStream ms = new MemoryStream(p.Data.Data);
             ms.Seek(0, SeekOrigin.Begin);
@@ -134,6 +135,11 @@ namespace TagDraco
             Bitmap b = BitmapImage2Bitmap(bitmap);
             pictureBox1.Image = ResizeImage(b, 256, 256);
             cover = b;
+            }
+            catch
+            {
+                cover = null;
+            }
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -154,6 +160,7 @@ namespace TagDraco
             trackBox.Text = "";
             genreBox.Text = "";
             yearBox.Text = "";
+            contArtistsBox.Text = "";
             pictureBox1.Image = null;
             reader.SetFile(null);
         }
