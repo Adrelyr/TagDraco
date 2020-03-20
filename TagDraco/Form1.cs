@@ -25,6 +25,7 @@ namespace TagDraco
         Writer writer = new Writer();
         Tag fileTags;
         Bitmap cover;
+        public static Dictionary<int, Tag> metaData = new Dictionary<int, Tag>();
        
         public TagDraco()
         {
@@ -38,48 +39,63 @@ namespace TagDraco
             LoadMetaData();
         }
 
-        private void BitmapImage2Bitmap(BitmapImage bitmapImage)
+        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(bitmapImage));
                 enc.Save(outStream);
-                cover = new System.Drawing.Bitmap(outStream);
+                return cover = new System.Drawing.Bitmap(outStream);
             }
         }
 
-        public static Bitmap ResizeImage(Image image, int width, int height)
+        private static Image ResizeImage(Image imgToResize, System.Drawing.Size size)
         {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
+            //Get the image current width
+            int sourceWidth = imgToResize.Width;
+            //Get the image current height
+            int sourceHeight = imgToResize.Height;
+            float nPercent = 0;
+            float nPercentW = 0;
+            float nPercentH = 0;
+            //Calulate  width with new desired size
+            nPercentW = ((float)size.Width / (float)sourceWidth);
+            //Calculate height with new desired siz
+            nPercentH = ((float)size.Height / (float)sourceHeight);
+            if (nPercentH < nPercentW)
+                nPercent = nPercentH;
+            else
+                nPercent = nPercentW;
+            //New Width
+            int destWidth = (int)(sourceWidth * nPercent);
+            //New Height
+            int destHeight = (int)(sourceHeight * nPercent);
+            Bitmap b = new Bitmap(destWidth, destHeight);
+            Graphics g = Graphics.FromImage((System.Drawing.Image)b);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            // Draw image with new width and height
+            g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+            g.Dispose();
+            return (System.Drawing.Image)b;
         }
+
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
             if (CheckFile()) return;
 
-            if(!writer.SaveMetadataToFile(reader.GetFile(), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
-                    int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), contArtistsBox.Text.Split(COMA), pictureBox1.Image))
+            int index = 0;
+            ListView.SelectedIndexCollection indexes =
+                this.listView1.SelectedIndices;
+            foreach (int index1 in indexes)
+            {
+                index = index1;
+            }
+
+            if (!writer.SaveMetadataToFile(TagLib.File.Create(listView1.SelectedItems[0].Text), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
+                    int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), contArtistsBox.Text.Split(COMA), pictureBox1.Image, index))
             {
                 MessageBox.Show("An error occured while saving the data to the file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -95,7 +111,7 @@ namespace TagDraco
             } catch {
                 return;
             }  
-            pictureBox1.Image = ResizeImage(cover, 256, 256);
+            pictureBox1.Image = ResizeImage(cover, new System.Drawing.Size(256,256));
         }
 
         bool CheckFile()
@@ -105,41 +121,26 @@ namespace TagDraco
 
         void LoadMetaData()
         {
+            metaData = new Dictionary<int, Tag>();
+            listView1.Items.Clear();
             Clear();
             GC.Collect();
-            fileTags = reader.GetTagsFromFile(openFileDialog1.FileName);
-
-            albumBox.Text = fileTags.Album;
-            foreach (String s in fileTags.AlbumArtists)
+            int index = 0;
+            foreach (String s in openFileDialog1.FileNames)
             {
-                artistBox.Text = artistBox.Text + s + COMA;
-            }
-            titleBox.Text = fileTags.Title;
-            yearBox.Text = fileTags.Year.ToString();
-            genreBox.Text = fileTags.FirstGenre;
-            trackBox.Text = fileTags.Track.ToString();
-            foreach (String s in fileTags.Performers)
-            {
-                contArtistsBox.Text = contArtistsBox.Text + s + COMA;
-            }
+                Console.WriteLine("Loading file " + s);
+                fileTags = reader.GetTagsFromFile(s);
+                if (fileTags == null) return;
+    
+                listView1.Items.Add(new ListViewItem(s));
 
-            try { 
-            IPicture p = fileTags.Pictures[0];
-            MemoryStream ms = new MemoryStream(p.Data.Data);
-            ms.Seek(0, SeekOrigin.Begin);
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.StreamSource = ms;
-            bitmap.EndInit();
-
-            Bitmap b = BitmapImage2Bitmap(bitmap);
-            pictureBox1.Image = ResizeImage(b, 256, 256);
-            cover = b;
+                metaData.Add(index, fileTags);
+                Console.WriteLine("Tags saved in index " + index);
+                index++;
+                
             }
-            catch
-            {
-                cover = null;
-            }
+            loadMetadataIntoDetailsBox(metaData[0]);
+            //listView1.
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -154,6 +155,7 @@ namespace TagDraco
 
         void Clear()
         {
+            if(cover != null) cover.Dispose();
             titleBox.Text = "";
             albumBox.Text = "";
             artistBox.Text = "";
@@ -163,6 +165,63 @@ namespace TagDraco
             contArtistsBox.Text = "";
             pictureBox1.Image = null;
             reader.SetFile(null);
+        }
+
+        private void TagDraco_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes =
+            this.listView1.SelectedIndices;
+            foreach (int index in indexes)
+            {
+                Clear();
+                GC.Collect();
+                Console.WriteLine(index);
+                Console.WriteLine(metaData[index].Title);
+                loadMetadataIntoDetailsBox(metaData[index]);
+            }
+        }
+
+        private void loadMetadataIntoDetailsBox(Tag tag)
+        {
+            albumBox.Text = tag.Album;
+            foreach (String s in tag.AlbumArtists)
+            {
+                artistBox.Text = artistBox.Text + s + COMA;
+            }
+            titleBox.Text = tag.Title;
+            yearBox.Text = tag.Year.ToString();
+            genreBox.Text = tag.FirstGenre;
+            trackBox.Text = tag.Track.ToString();
+            foreach (String s in tag.Performers)
+            {
+                contArtistsBox.Text = contArtistsBox.Text + s + COMA;
+            }
+
+            try
+            {
+                IPicture p = tag.Pictures[0];
+                MemoryStream ms = new MemoryStream(p.Data.Data);
+                ms.Seek(0, SeekOrigin.Begin);
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = ms;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                Bitmap b = BitmapImage2Bitmap(bitmap);
+                pictureBox1.Image = ResizeImage(b, new System.Drawing.Size(256,256));
+                cover = b;
+            }
+            catch
+            {
+                cover = null;
+            }
         }
     }
 }

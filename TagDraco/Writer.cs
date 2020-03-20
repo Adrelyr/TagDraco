@@ -14,7 +14,7 @@ namespace TagDraco
     class Writer
     {
         const string TEMP_FILE_NAME = "tagDracoTemp.png";
-        public bool SaveMetadataToFile(TagLib.File file, string title, string album, string[] albumArtists, int track, int year, string[] genres, string[] artists, Image picFile)
+        public bool SaveMetadataToFile(TagLib.File file, string title, string album, string[] albumArtists, int track, int year, string[] genres, string[] artists, Image picFile, int index)
         {
             try {
                 Tag tags = file.Tag;
@@ -31,6 +31,7 @@ namespace TagDraco
                 Picture[] picture = new Picture[1];
                 picture[0] = new Picture(fileName);
                 tags.Pictures = picture;
+                TagDraco.metaData[index] = tags;
                 file.Save();
                 MessageBox.Show("Tags successfuly updated.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return true;

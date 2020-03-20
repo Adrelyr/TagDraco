@@ -13,9 +13,13 @@ namespace TagDraco
         private TagLib.File tagFile;
         public Tag GetTagsFromFile(String filePath)
         {
-            tagFile = TagLib.File.Create(filePath);
-            currentFilePath = filePath;
-            return tagFile.Tag;
+            try { 
+                tagFile = TagLib.File.Create(filePath);
+                currentFilePath = filePath;
+                return tagFile.Tag;
+            }catch{
+                return null;
+            }
         }
 
         public string getCurrentFilePath()
