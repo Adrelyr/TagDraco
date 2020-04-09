@@ -58,6 +58,14 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.listView1 = new System.Windows.Forms.ListView();
             this.button1 = new System.Windows.Forms.Button();
+            this.title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.album = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.albumArtists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contArtists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.track = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.genre = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.year = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.path = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -94,14 +102,14 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
@@ -116,7 +124,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -124,6 +132,7 @@
             // 
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.contArtistsBox);
+            this.groupBox1.Controls.Add(this.changeTagsBtn);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.trackBox);
             this.groupBox1.Controls.Add(this.label5);
@@ -280,9 +289,10 @@
             // changeTagsBtn
             // 
             this.changeTagsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.changeTagsBtn.Location = new System.Drawing.Point(941, 875);
+            this.changeTagsBtn.ForeColor = System.Drawing.Color.Black;
+            this.changeTagsBtn.Location = new System.Drawing.Point(6, 362);
             this.changeTagsBtn.Name = "changeTagsBtn";
-            this.changeTagsBtn.Size = new System.Drawing.Size(256, 32);
+            this.changeTagsBtn.Size = new System.Drawing.Size(297, 32);
             this.changeTagsBtn.TabIndex = 4;
             this.changeTagsBtn.Text = "Update File";
             this.changeTagsBtn.UseVisualStyleBackColor = true;
@@ -314,17 +324,26 @@
             this.listView1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
             this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listView1.CheckBoxes = true;
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.title,
+            this.album,
+            this.albumArtists,
+            this.contArtists,
+            this.track,
+            this.genre,
+            this.year,
+            this.path});
             this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView1.ForeColor = System.Drawing.Color.White;
             this.listView1.GridLines = true;
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Location = new System.Drawing.Point(-4, -4);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(608, 874);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
+            this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // button1
@@ -338,6 +357,43 @@
             this.button1.Text = "Update All Files";
             this.button1.UseVisualStyleBackColor = true;
             // 
+            // title
+            // 
+            this.title.Text = "Title";
+            this.title.Width = 75;
+            // 
+            // album
+            // 
+            this.album.Text = "Album";
+            // 
+            // albumArtists
+            // 
+            this.albumArtists.Text = "Album Artists";
+            // 
+            // contArtists
+            // 
+            this.contArtists.Text = "Contributing artists";
+            this.contArtists.Width = 148;
+            // 
+            // track
+            // 
+            this.track.Text = "Track";
+            // 
+            // genre
+            // 
+            this.genre.Text = "Genre";
+            this.genre.Width = 83;
+            // 
+            // year
+            // 
+            this.year.Text = "Year";
+            this.year.Width = 58;
+            // 
+            // path
+            // 
+            this.path.Text = "Path";
+            this.path.Width = 80;
+            // 
             // TagDraco
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -346,7 +402,6 @@
             this.ClientSize = new System.Drawing.Size(1209, 919);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.changeTagsBtn);
             this.Controls.Add(this.changePicBtn);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.groupBox1);
@@ -399,6 +454,14 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ColumnHeader title;
+        private System.Windows.Forms.ColumnHeader album;
+        private System.Windows.Forms.ColumnHeader albumArtists;
+        private System.Windows.Forms.ColumnHeader contArtists;
+        private System.Windows.Forms.ColumnHeader track;
+        private System.Windows.Forms.ColumnHeader genre;
+        private System.Windows.Forms.ColumnHeader year;
+        private System.Windows.Forms.ColumnHeader path;
     }
 }
 
