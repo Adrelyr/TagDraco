@@ -19,7 +19,7 @@ namespace TagDraco
     public partial class TagDraco : Form
     {
         const char COMA = ',';
-        const string VERSION = "a1.0.1";
+        const string VERSION = "a1.1.3";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         Reader reader = new Reader();
         Writer writer = new Writer();
@@ -34,46 +34,11 @@ namespace TagDraco
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            metaData.Clear();
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == null) return;
-            LoadMetaData();
+            LoadMetaData(-1);
         }
-
-        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
-        {
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
-                enc.Save(outStream);
-                return cover = new System.Drawing.Bitmap(outStream);
-            }
-        }
-
-        private static Image ResizeImage(Image imgToResize, System.Drawing.Size size)
-        {
-
-            int sourceWidth = imgToResize.Width;
-            int sourceHeight = imgToResize.Height;
-            float nPercent = 0;
-            float nPercentW = 0;
-            float nPercentH = 0;
-            nPercentW = ((float)size.Width / (float)sourceWidth);
-            nPercentH = ((float)size.Height / (float)sourceHeight);
-            if (nPercentH < nPercentW)
-                nPercent = nPercentH;
-            else
-                nPercent = nPercentW;
-            int destWidth = (int)(sourceWidth * nPercent);
-            int destHeight = (int)(sourceHeight * nPercent);
-            Bitmap b = new Bitmap(destWidth, destHeight);
-            Graphics g = Graphics.FromImage((System.Drawing.Image)b);
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
-            g.Dispose();
-            return (System.Drawing.Image)b;
-        }
-
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
@@ -87,11 +52,12 @@ namespace TagDraco
                 index = index1;
             }
 
-            if (!writer.SaveMetadataToFile(TagLib.File.Create(listView1.SelectedItems[0].Text), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
+            if (!writer.SaveMetadataToFile(TagLib.File.Create(listView1.SelectedItems[0].SubItems[listView1.SelectedItems[0].SubItems.Count-1].Text), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
                     int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), contArtistsBox.Text.Split(COMA), pictureBox1.Image, index))
             {
                 MessageBox.Show("An error occured while saving the data to the file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            LoadMetaData(index);
         }
 
         private void changePicBtnPressed(object sender, EventArgs e)
@@ -104,7 +70,7 @@ namespace TagDraco
             } catch {
                 return;
             }  
-            pictureBox1.Image = ResizeImage(cover, new System.Drawing.Size(256,256));
+            pictureBox1.Image = Utils.ResizeImage(cover, new System.Drawing.Size(256,256));
         }
 
         bool CheckFile()
@@ -112,7 +78,7 @@ namespace TagDraco
             return reader.getCurrentFilePath() == null;
         }
 
-        void LoadMetaData()
+        void LoadMetaData(int index2)
         {
             metaData = new Dictionary<int, Tag>();
             listView1.Items.Clear();
@@ -164,13 +130,17 @@ namespace TagDraco
                 
             }
             listView1.Focus();
-            loadMetadataIntoDetailsBox(metaData[0]);
+            if(index2==-1)
+                loadMetadataIntoDetailsBox(metaData[0]);
+            else
+                loadMetadataIntoDetailsBox(metaData[index2]);
             //listView1.
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Clear();
+            metaData.Clear();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -206,7 +176,6 @@ namespace TagDraco
                 Clear();
                 GC.Collect();
                 Console.WriteLine(index);
-                Console.WriteLine(metaData[index].Title);
                 loadMetadataIntoDetailsBox(metaData[index]);
             }
         }
@@ -239,8 +208,8 @@ namespace TagDraco
                 bitmap.EndInit();
                 bitmap.Freeze();
 
-                Bitmap b = BitmapImage2Bitmap(bitmap);
-                pictureBox1.Image = ResizeImage(b, new System.Drawing.Size(256,256));
+                Bitmap b = Utils.BitmapImage2Bitmap(bitmap);
+                pictureBox1.Image = Utils.ResizeImage(b, new System.Drawing.Size(256,256));
                 cover = b;
             }
             catch

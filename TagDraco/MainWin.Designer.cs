@@ -39,6 +39,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
             this.contArtistsBox = new System.Windows.Forms.TextBox();
+            this.changeTagsBtn = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.trackBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -53,11 +54,9 @@
             this.albumBox = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.changePicBtn = new System.Windows.Forms.Button();
-            this.changeTagsBtn = new System.Windows.Forms.Button();
             this.imageBrowser = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
             this.listView1 = new System.Windows.Forms.ListView();
-            this.button1 = new System.Windows.Forms.Button();
             this.title = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.album = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.albumArtists = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -86,7 +85,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1209, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1552, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -102,14 +101,14 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
@@ -124,7 +123,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -168,6 +167,18 @@
             this.contArtistsBox.Name = "contArtistsBox";
             this.contArtistsBox.Size = new System.Drawing.Size(297, 20);
             this.contArtistsBox.TabIndex = 12;
+            // 
+            // changeTagsBtn
+            // 
+            this.changeTagsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.changeTagsBtn.ForeColor = System.Drawing.Color.Black;
+            this.changeTagsBtn.Location = new System.Drawing.Point(6, 362);
+            this.changeTagsBtn.Name = "changeTagsBtn";
+            this.changeTagsBtn.Size = new System.Drawing.Size(297, 32);
+            this.changeTagsBtn.TabIndex = 4;
+            this.changeTagsBtn.Text = "Update File";
+            this.changeTagsBtn.UseVisualStyleBackColor = true;
+            this.changeTagsBtn.Click += new System.EventHandler(this.saveMetadataBtnPressed);
             // 
             // label6
             // 
@@ -269,7 +280,7 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
-            this.pictureBox1.Location = new System.Drawing.Point(941, 33);
+            this.pictureBox1.Location = new System.Drawing.Point(1284, 33);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(256, 256);
             this.pictureBox1.TabIndex = 2;
@@ -278,25 +289,13 @@
             // changePicBtn
             // 
             this.changePicBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.changePicBtn.Location = new System.Drawing.Point(941, 295);
+            this.changePicBtn.Location = new System.Drawing.Point(1284, 295);
             this.changePicBtn.Name = "changePicBtn";
             this.changePicBtn.Size = new System.Drawing.Size(256, 23);
             this.changePicBtn.TabIndex = 3;
             this.changePicBtn.Text = "Change picture";
             this.changePicBtn.UseVisualStyleBackColor = true;
             this.changePicBtn.Click += new System.EventHandler(this.changePicBtnPressed);
-            // 
-            // changeTagsBtn
-            // 
-            this.changeTagsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.changeTagsBtn.ForeColor = System.Drawing.Color.Black;
-            this.changeTagsBtn.Location = new System.Drawing.Point(6, 362);
-            this.changeTagsBtn.Name = "changeTagsBtn";
-            this.changeTagsBtn.Size = new System.Drawing.Size(297, 32);
-            this.changeTagsBtn.TabIndex = 4;
-            this.changeTagsBtn.Text = "Update File";
-            this.changeTagsBtn.UseVisualStyleBackColor = true;
-            this.changeTagsBtn.Click += new System.EventHandler(this.saveMetadataBtnPressed);
             // 
             // imageBrowser
             // 
@@ -312,7 +311,7 @@
             this.panel1.Controls.Add(this.listView1);
             this.panel1.Location = new System.Drawing.Point(327, 33);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(608, 874);
+            this.panel1.Size = new System.Drawing.Size(951, 405);
             this.panel1.TabIndex = 5;
             // 
             // listView1
@@ -340,22 +339,11 @@
             this.listView1.Location = new System.Drawing.Point(-4, -4);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(608, 874);
+            this.listView1.Size = new System.Drawing.Size(951, 406);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(941, 835);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(256, 32);
-            this.button1.TabIndex = 15;
-            this.button1.Text = "Update All Files";
-            this.button1.UseVisualStyleBackColor = true;
             // 
             // title
             // 
@@ -365,15 +353,17 @@
             // album
             // 
             this.album.Text = "Album";
+            this.album.Width = 107;
             // 
             // albumArtists
             // 
             this.albumArtists.Text = "Album Artists";
+            this.albumArtists.Width = 132;
             // 
             // contArtists
             // 
             this.contArtists.Text = "Contributing artists";
-            this.contArtists.Width = 148;
+            this.contArtists.Width = 192;
             // 
             // track
             // 
@@ -382,7 +372,7 @@
             // genre
             // 
             this.genre.Text = "Genre";
-            this.genre.Width = 83;
+            this.genre.Width = 102;
             // 
             // year
             // 
@@ -392,15 +382,14 @@
             // path
             // 
             this.path.Text = "Path";
-            this.path.Width = 80;
+            this.path.Width = 222;
             // 
             // TagDraco
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(49)))), ((int)(((byte)(60)))));
-            this.ClientSize = new System.Drawing.Size(1209, 919);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(1552, 448);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.changePicBtn);
             this.Controls.Add(this.pictureBox1);
@@ -453,7 +442,6 @@
         private System.Windows.Forms.TextBox contArtistsBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ColumnHeader title;
         private System.Windows.Forms.ColumnHeader album;
         private System.Windows.Forms.ColumnHeader albumArtists;
