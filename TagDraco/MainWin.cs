@@ -19,7 +19,7 @@ namespace TagDraco
     public partial class TagDraco : Form
     {
         const char COMA = ',';
-        const string VERSION = "a1.1.3";
+        const string VERSION = "a1.2.0";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         Reader reader = new Reader();
         Writer writer = new Writer();
@@ -46,13 +46,13 @@ namespace TagDraco
 
             int index = 0;
             ListView.SelectedIndexCollection indexes =
-                this.listView1.SelectedIndices;
+                this.listView.SelectedIndices;
             foreach (int index1 in indexes)
             {
                 index = index1;
             }
 
-            if (!writer.SaveMetadataToFile(TagLib.File.Create(listView1.SelectedItems[0].SubItems[listView1.SelectedItems[0].SubItems.Count-1].Text), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
+            if (!writer.SaveMetadataToFile(TagLib.File.Create(listView.SelectedItems[0].SubItems[listView.SelectedItems[0].SubItems.Count-1].Text), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
                     int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), contArtistsBox.Text.Split(COMA), pictureBox1.Image, index))
             {
                 MessageBox.Show("An error occured while saving the data to the file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -81,7 +81,7 @@ namespace TagDraco
         void LoadMetaData(int index2)
         {
             metaData = new Dictionary<int, Tag>();
-            listView1.Items.Clear();
+            listView.Items.Clear();
             Clear();
             GC.Collect();
             int index = 0;
@@ -123,18 +123,26 @@ namespace TagDraco
 
                 item.SubItems.Add(s);
 
-                listView1.Items.Add(item);
+                listView.Items.Add(item);
 
                 Console.WriteLine("Tags saved in index " + index);
                 index++;
                 
             }
-            listView1.Focus();
-            if(index2==-1)
-                loadMetadataIntoDetailsBox(metaData[0]);
-            else
-                loadMetadataIntoDetailsBox(metaData[index2]);
-            //listView1.
+
+            listView.Focus();
+            if (index2 == -1) { 
+                //loadMetadataIntoDetailsBox(metaData[0]);
+                listView.Items[0].Focused = true;
+                listView.Items[0].Selected = true;
+                listView.Items[0].EnsureVisible();
+            }
+            else { 
+                //loadMetadataIntoDetailsBox(metaData[index2]);
+                listView.Items[index2].Focused = true;
+                listView.Items[index2].Selected = true;
+                listView.Items[index2].EnsureVisible();
+            }
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -170,12 +178,11 @@ namespace TagDraco
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListView.SelectedIndexCollection indexes =
-            this.listView1.SelectedIndices;
+            this.listView.SelectedIndices;
             foreach (int index in indexes)
             {
                 Clear();
                 GC.Collect();
-                Console.WriteLine(index);
                 loadMetadataIntoDetailsBox(metaData[index]);
             }
         }
