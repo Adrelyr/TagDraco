@@ -10,32 +10,39 @@ namespace TagDraco
     class Reader
     {
         private string currentFilePath;
-        private TagLib.File tagFile;
-        public Tag GetTagsFromFile(String filePath)
+        private File tagFile;
+
+        public Reader(String path)
+        {
+            GetTagsFromFile(path);
+        }
+
+        ~Reader(){}
+
+        public void GetTagsFromFile(String filePath)
         {
             try { 
                 tagFile = TagLib.File.Create(filePath);
                 currentFilePath = filePath;
-                return tagFile.Tag;
-            }catch{
-                return null;
+                Console.WriteLine("[Reader] - Retrieved tags in file {0}", filePath);
+            }catch(Exception e){
+                Console.WriteLine("[Reader] - An error occured : {0}", e.Message);
             }
         }
 
-        public string getCurrentFilePath()
+        public string GetCurrentFilePath()
         {
             return currentFilePath;
         }
 
-        public TagLib.File GetFile()
+        public Tag GetFileTags()
+        {
+            return tagFile.Tag;
+        }
+
+        public File GetFile()
         {
             return tagFile;
         }
-
-        public void SetFile(TagLib.File newFile)
-        {
-            tagFile = newFile;
-        }
-
     }
 }

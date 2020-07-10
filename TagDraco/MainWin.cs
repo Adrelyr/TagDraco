@@ -19,14 +19,13 @@ namespace TagDraco
     public partial class TagDraco : Form
     {
         const char COMA = ',';
-        const string VERSION = "a1.2.0";
+        const string VERSION = "1.0.0";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
-        Reader reader = new Reader();
-        Writer writer = new Writer();
-        Tag fileTags;
-        Bitmap cover;
-        public static Dictionary<int, Tag> metaData = new Dictionary<int, Tag>();
-       
+        private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
+
+        private Color DARK_BLAY = Color.FromArgb(20, 20, 24);
+        private Color BLAY = Color.FromArgb(47, 49, 60);
+
         public TagDraco()
         {
             InitializeComponent();
@@ -34,161 +33,76 @@ namespace TagDraco
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            metaData.Clear();
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == null) return;
-            LoadMetaData(-1);
+            int index = 0;
+            foreach(String fileName in openFileDialog1.FileNames) { 
+                tagMap.Add(index, new Reader(fileName));
+                Console.WriteLine("[Main] - Loaded tags from file {0} at index {1}", fileName, index);
+                index++;
+            }
+            LoadMetaData(0);
         }
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
-            if (CheckFile()) return;
-
-            int index = 0;
-            ListView.SelectedIndexCollection indexes =
-                this.listView.SelectedIndices;
-            foreach (int index1 in indexes)
-            {
-                index = index1;
-            }
-
-            if (!writer.SaveMetadataToFile(TagLib.File.Create(listView.SelectedItems[0].SubItems[listView.SelectedItems[0].SubItems.Count-1].Text), titleBox.Text, albumBox.Text, artistBox.Text.Split(COMA),
-                    int.Parse(trackBox.Text), int.Parse(yearBox.Text), genreBox.Text.Split(COMA), contArtistsBox.Text.Split(COMA), pictureBox1.Image, index))
-            {
-                MessageBox.Show("An error occured while saving the data to the file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            LoadMetaData(index);
+            
         }
 
         private void changePicBtnPressed(object sender, EventArgs e)
         {
-            if (CheckFile()) return;
             imageBrowser.ShowDialog();
-            try
-            {
-                cover = new Bitmap(imageBrowser.FileName);
-            } catch {
-                return;
-            }  
-            pictureBox1.Image = Utils.ResizeImage(cover, new System.Drawing.Size(256,256));
-        }
+            if (imageBrowser.FileName.Equals(null)) return;
 
-        bool CheckFile()
-        {
-            return reader.getCurrentFilePath() == null;
-        }
+            Bitmap newBitmap = new Bitmap(imageBrowser.FileName);
+            pictureBox1.Image = Utils.ResizeImage(newBitmap, new System.Drawing.Size(256, 256));
+            newBitmap.Dispose();
 
-        void LoadMetaData(int index2)
+        }
+        void LoadMetaData(int index)
         {
-            metaData = new Dictionary<int, Tag>();
-            listView.Items.Clear();
-            Clear();
             GC.Collect();
-            int index = 0;
-            foreach (String s in openFileDialog1.FileNames)
+            Clear(false);
+            int panelYPos = 10;
+            foreach(Reader read in tagMap.Values)
             {
-                Console.WriteLine("Loading file " + s);
-                fileTags = reader.GetTagsFromFile(s);
-                if (fileTags == null) return;
+                IPicture p = read.GetFileTags().Pictures[0];
+                MemoryStream ms = new MemoryStream(p.Data.Data);
+                ms.Seek(0, SeekOrigin.Begin);
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.StreamSource = ms;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                bitmap.Freeze();
 
-                metaData.Add(index, fileTags);
-                ListViewItem item = new ListViewItem(fileTags.Title);
+                Bitmap cover = Utils.BitmapImage2Bitmap(bitmap);
+                Image finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(128, 128));
+                //cover.Dispose();
+                TrackPanel trackPanel = new TrackPanel(
+                        read.GetFileTags().Title,
+                        read.GetFileTags().Performers,
+                        read.GetFileTags().Album,
+                        read.GetFileTags().Year,
+                        read.GetFileTags().Genres,
+                        read.GetFileTags().Track,
+                        finalCover
+                    );
+                trackPanel.Location = new System.Drawing.Point(10, panelYPos);
+                trackPanel.Click += new EventHandler(onTrackPanelClicked);
+                trackPanel.MouseHover += new EventHandler(onTrackPanelHovered);
+                trackPanel.MouseLeave += new EventHandler(onTrackPanelExited);
 
-                item.SubItems.Add(fileTags.Album);
-
-                string alArtists = "";
-                foreach (String s1 in fileTags.AlbumArtists)
-                {
-                    alArtists = alArtists + s1 + COMA;
-                }
-                item.SubItems.Add(alArtists);
-
-                string perf = "";
-                foreach (String s2 in fileTags.Performers)
-                {
-                    perf = perf + s2 + COMA;
-                }
-                item.SubItems.Add(perf);
-
-                item.SubItems.Add(""+fileTags.Track);
-
-                string genres = "";
-                foreach (String s3 in fileTags.Genres)
-                {
-                    genres = genres + s3 + COMA;
-                }
-                item.SubItems.Add(genres);
-
-                item.SubItems.Add(""+fileTags.Year);
-
-                item.SubItems.Add(s);
-
-                listView.Items.Add(item);
-
-                Console.WriteLine("Tags saved in index " + index);
-                index++;
-                
+                this.panel1.Controls.Add(trackPanel);
+                panelYPos += 148;
+                //finalCover.Dispose();
             }
-
-            listView.Focus();
-            if (index2 == -1) { 
-                //loadMetadataIntoDetailsBox(metaData[0]);
-                listView.Items[0].Focused = true;
-                listView.Items[0].Selected = true;
-                listView.Items[0].EnsureVisible();
-            }
-            else { 
-                //loadMetadataIntoDetailsBox(metaData[index2]);
-                listView.Items[index2].Focused = true;
-                listView.Items[index2].Selected = true;
-                listView.Items[index2].EnsureVisible();
-            }
+            loadMetadataIntoDetailsBox(tagMap[0].GetFileTags());
         }
-
-        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Clear();
-            metaData.Clear();
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(ABOUT_STRING, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        void Clear()
-        {
-            if(cover != null) cover.Dispose();
-            titleBox.Text = "";
-            albumBox.Text = "";
-            artistBox.Text = "";
-            trackBox.Text = "";
-            genreBox.Text = "";
-            yearBox.Text = "";
-            contArtistsBox.Text = "";
-            pictureBox1.Image = null;
-            reader.SetFile(null);
-        }
-
-        private void TagDraco_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ListView.SelectedIndexCollection indexes =
-            this.listView.SelectedIndices;
-            foreach (int index in indexes)
-            {
-                Clear();
-                GC.Collect();
-                loadMetadataIntoDetailsBox(metaData[index]);
-            }
-        }
-
+        
         private void loadMetadataIntoDetailsBox(Tag tag)
         {
+            titleBox.Text = tag.Title;
             albumBox.Text = tag.Album;
             foreach (String s in tag.AlbumArtists)
             {
@@ -216,13 +130,61 @@ namespace TagDraco
                 bitmap.Freeze();
 
                 Bitmap b = Utils.BitmapImage2Bitmap(bitmap);
-                pictureBox1.Image = Utils.ResizeImage(b, new System.Drawing.Size(256,256));
-                cover = b;
+                pictureBox1.Image = Utils.ResizeImage(b, new System.Drawing.Size(256, 256));
+                //b.Dispose();
             }
             catch
             {
-                cover = null;
+                pictureBox1.Image = null;
             }
+        }
+
+        private void onTrackPanelClicked(object sender, EventArgs e)
+        {
+            TrackPanel p = (TrackPanel)sender;
+            p.BackColor = BLAY;
+            Clear(false);
+            loadMetadataIntoDetailsBox(tagMap[panel1.Controls.IndexOf(p)].GetFileTags());
+        }
+
+        private void onTrackPanelHovered(object sender, EventArgs e)
+        {
+            TrackPanel p = (TrackPanel)sender;
+            p.BackColor = BLAY;
+        }
+
+        private void onTrackPanelExited(object sender, EventArgs e)
+        {
+            TrackPanel p = (TrackPanel)sender;
+            p.BackColor = DARK_BLAY;
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(ABOUT_STRING, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        void Clear(bool clearDictionary)
+        {
+            GC.Collect();
+            if(clearDictionary) tagMap.Clear();
+            titleBox.Text = "";
+            albumBox.Text = "";
+            artistBox.Text = "";
+            trackBox.Text = "";
+            genreBox.Text = "";
+            yearBox.Text = "";
+            contArtistsBox.Text = "";
+            pictureBox1.Image = null;
+        }
+
+        private void TagDraco_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }

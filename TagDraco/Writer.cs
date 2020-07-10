@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TagLib;
 
@@ -13,34 +9,42 @@ namespace TagDraco
 {
     class Writer
     {
-        const string TEMP_FILE_NAME = "tagDracoTemp.png";
-        public bool SaveMetadataToFile(TagLib.File file, string title, string album, string[] albumArtists, int track, int year, string[] genres, string[] artists, Image picFile, int index)
+        public const string TEMP_FILE_NAME = "tagDracoTemp.png";
+        private TagLib.File file;
+
+        public Writer(Reader reader)
+        {
+            file = reader.GetFile();
+        }
+
+        ~Writer() {}
+
+        public bool UpdateTags(TagLib.File file, Image cover)
+        {
+            return SaveMetadataToFile(file, cover);
+        }
+
+        private bool SaveMetadataToFile(TagLib.File file, Image cover)
         {
             try {
-                Tag tags = file.Tag;
 
-                tags.Title = title;
-                tags.Album = album;
-                tags.AlbumArtists = albumArtists;
-                tags.Performers = artists;
-                tags.Track = (uint)track;
-                tags.Genres = genres;
-                tags.Year = (uint)year;
-                string fileName = System.IO.Path.GetTempPath() + TEMP_FILE_NAME;
-                picFile.Save(Path.GetTempPath() + TEMP_FILE_NAME, ImageFormat.Png);
-                Picture[] picture = new Picture[1];
-                picture[0] = new Picture(fileName);
-                tags.Pictures = picture;
-                TagDraco.metaData[index] = tags;
+                if (!cover.Equals(null)) { 
+                    string fileName = System.IO.Path.GetTempPath() + TEMP_FILE_NAME;
+                    cover.Save(Path.GetTempPath() + TEMP_FILE_NAME, ImageFormat.Png);
+                    Picture picture = new Picture(fileName);
+                    file.Tag.Pictures =new Picture[] { picture };
+                    cover.Dispose();
+                }
                 file.Save();
+                Console.WriteLine("[Writer] - Succesfully saved tags for file {0}",file.Name);
                 MessageBox.Show("Tags successfuly updated.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0}",e.Message);
                 return false;
             }
-            
         }
     }
 }
