@@ -7,7 +7,6 @@ Using TagLib-Sharp from https://github.com/mono/taglib-sharp
 
 Roadmap :
 
- - Adding support for editing multiple files at a time
  - Better memory management (i still need to learn how to manage it correctly)
 
 *The look is subject to change, but here's how it looks like currently*
