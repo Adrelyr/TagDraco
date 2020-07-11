@@ -23,6 +23,8 @@ namespace TagDraco
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
 
+        private short selectedIndex = 0;
+
         private Color DARK_BLAY = Color.FromArgb(20, 20, 24);
         private Color BLAY = Color.FromArgb(47, 49, 60);
 
@@ -34,7 +36,8 @@ namespace TagDraco
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialog1.ShowDialog();
-            if (openFileDialog1.FileName == null) return;
+            if (openFileDialog1.FileName == "") return;
+            if (openFileDialog1.FileNames.Length == 0) return;
             int index = 0;
             foreach(String fileName in openFileDialog1.FileNames) { 
                 tagMap.Add(index, new Reader(fileName));
@@ -46,13 +49,24 @@ namespace TagDraco
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
-            
+            tagMap[selectedIndex].GetFileTags().Title = titleBox.Text;
+            tagMap[selectedIndex].GetFileTags().Performers = contArtistsBox.Text.Split(COMA);
+            tagMap[selectedIndex].GetFileTags().AlbumArtists = artistBox.Text.Split(COMA);
+            tagMap[selectedIndex].GetFileTags().Album = albumBox.Text;
+            tagMap[selectedIndex].GetFileTags().Year = uint.Parse(yearBox.Text);
+            tagMap[selectedIndex].GetFileTags().Track = uint.Parse(trackBox.Text);
+            tagMap[selectedIndex].GetFileTags().Genres = genreBox.Text.Split(COMA);
+            Writer writer = new Writer(tagMap[selectedIndex]);
+            writer.UpdateTags(tagMap[selectedIndex].GetFile(), pictureBox1.Image);
+            tagMap[selectedIndex].GetTagsFromFile(tagMap[selectedIndex].GetCurrentFilePath());
+            ClearTrackPanels();
+            LoadMetaData(selectedIndex);
         }
 
         private void changePicBtnPressed(object sender, EventArgs e)
         {
             imageBrowser.ShowDialog();
-            if (imageBrowser.FileName.Equals(null)) return;
+            if (imageBrowser.FileName==("")) return;
 
             Bitmap newBitmap = new Bitmap(imageBrowser.FileName);
             pictureBox1.Image = Utils.ResizeImage(newBitmap, new System.Drawing.Size(256, 256));
@@ -60,9 +74,11 @@ namespace TagDraco
 
         }
         void LoadMetaData(int index)
-        {
+        { 
+            ClearTrackPanels();
             GC.Collect();
             Clear(false);
+           
             int panelYPos = 10;
             foreach(Reader read in tagMap.Values)
             {
@@ -97,25 +113,27 @@ namespace TagDraco
                 panelYPos += 148;
                 //finalCover.Dispose();
             }
-            loadMetadataIntoDetailsBox(tagMap[0].GetFileTags());
+            loadMetadataIntoDetailsBox(tagMap[index].GetFileTags());
         }
-        
+
         private void loadMetadataIntoDetailsBox(Tag tag)
         {
             titleBox.Text = tag.Title;
             albumBox.Text = tag.Album;
+
             foreach (String s in tag.AlbumArtists)
-            {
                 artistBox.Text = artistBox.Text + s + COMA;
-            }
+
             titleBox.Text = tag.Title;
             yearBox.Text = tag.Year.ToString();
-            genreBox.Text = tag.FirstGenre;
+
+            foreach (String s in tag.Genres)
+                genreBox.Text = genreBox.Text + s + COMA;
+
             trackBox.Text = tag.Track.ToString();
+
             foreach (String s in tag.Performers)
-            {
                 contArtistsBox.Text = contArtistsBox.Text + s + COMA;
-            }
 
             try
             {
@@ -144,6 +162,7 @@ namespace TagDraco
             TrackPanel p = (TrackPanel)sender;
             p.BackColor = BLAY;
             Clear(false);
+            selectedIndex = (short)panel1.Controls.IndexOf(p);
             loadMetadataIntoDetailsBox(tagMap[panel1.Controls.IndexOf(p)].GetFileTags());
         }
 
@@ -161,6 +180,8 @@ namespace TagDraco
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Clear(true);
+            ClearTrackPanels();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -182,9 +203,15 @@ namespace TagDraco
             pictureBox1.Image = null;
         }
 
+        void ClearTrackPanels()
+        {
+            panel1.Controls.Clear();
+        }
+
         private void TagDraco_Load(object sender, EventArgs e)
         {
-            
+            openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+            imageBrowser.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
         }
     }
 }

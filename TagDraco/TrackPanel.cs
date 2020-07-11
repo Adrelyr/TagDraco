@@ -30,9 +30,8 @@ namespace TagDraco
             this.cover.Image = cover;
             this.cover.Size = new Size(COVER_SIZE, COVER_SIZE);
             this.cover.Location = new Point(COVER_POS_XY, COVER_POS_XY);
-            this.cover.BackColor = DARK_BLAY;
+            this.cover.BackColor = Color.FromArgb(10, 10, 14); ;
 
-          
             this.details.Location = new Point(LABELS_X, TITLE_Y);
             this.details.ForeColor = Color.White;
             this.details.AutoSize = true;

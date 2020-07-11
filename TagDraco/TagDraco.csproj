@@ -81,6 +81,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -97,6 +98,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\TagDraco_Open %28Custom%29.png" />
+    <None Include="Resources\TagDraco_Help 16.png" />
+    <None Include="Resources\TagDraco_File 16.png" />
+    <None Include="Resources\TagDraco_Clear 16.png" />
+    <None Include="Resources\TagDraco_About 16.png" />
     <Content Include="tagdraco.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
