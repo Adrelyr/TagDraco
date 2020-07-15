@@ -8,10 +8,11 @@ Using TagLib-Sharp from https://github.com/mono/taglib-sharp
 Roadmap :
 
  - Better memory management (i still need to learn how to manage it correctly)
+ - Improvements on the multiple file display
 
 *The look is subject to change, but here's how it looks like currently*
 ![The look is subject to change, but here's how it looks like currently
-](https://github.com/Dreregon/Tag-Draco/blob/master/screenshot.png)
+](https://github.com/Dreregon/Tag-Draco/blob/master/TagDraco_2020-07-11_17-27-59.png)
 
 Feedback is welcome !
 
