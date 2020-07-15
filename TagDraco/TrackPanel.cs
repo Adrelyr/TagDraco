@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace TagDraco
@@ -25,7 +26,7 @@ namespace TagDraco
 
         private const char COMA = ',';
 
-        public TrackPanel(string title, string[] artists, string album, uint year, string[] genres, uint track, Image cover)
+        public TrackPanel(string title, string[] artists, string album, uint year, string[] genres, uint track, Image cover, string file)
         {
             this.cover.Image = cover;
             this.cover.Size = new Size(COVER_SIZE, COVER_SIZE);
@@ -48,7 +49,7 @@ namespace TagDraco
                 genre = genre + genre1 + COMA;
             }  
             
-            this.details.Text = title+"\n"+alArtists+"\n"+album+"\n"+year.ToString()+"\n"+genre+"\n"+track.ToString();
+            this.details.Text = "File: "+file+"\n"+title+"\n"+alArtists+"\n"+album+"\n"+year.ToString()+"\n"+genre+"\n"+track.ToString();
 
             this.Controls.Add(this.cover);
             this.Controls.Add(this.details);

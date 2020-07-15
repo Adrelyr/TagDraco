@@ -82,18 +82,22 @@ namespace TagDraco
             int panelYPos = 10;
             foreach(Reader read in tagMap.Values)
             {
-                IPicture p = read.GetFileTags().Pictures[0];
-                MemoryStream ms = new MemoryStream(p.Data.Data);
-                ms.Seek(0, SeekOrigin.Begin);
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.StreamSource = ms;
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
-                bitmap.Freeze();
+                IPicture p = null;
+                Image finalCover = null;
+                if (read.GetFileTags().Pictures.Length != 0) { 
+                    p = read.GetFileTags().Pictures[0];
+                    MemoryStream ms = new MemoryStream(p.Data.Data);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = ms;
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
 
-                Bitmap cover = Utils.BitmapImage2Bitmap(bitmap);
-                Image finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(128, 128));
+                    Bitmap cover = Utils.BitmapImage2Bitmap(bitmap);
+                    finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(128, 128));
+                }
                 //cover.Dispose();
                 TrackPanel trackPanel = new TrackPanel(
                         read.GetFileTags().Title,
@@ -102,7 +106,8 @@ namespace TagDraco
                         read.GetFileTags().Year,
                         read.GetFileTags().Genres,
                         read.GetFileTags().Track,
-                        finalCover
+                        finalCover,
+                        read.GetFile().Name
                     );
                 trackPanel.Location = new System.Drawing.Point(10, panelYPos);
                 trackPanel.Click += new EventHandler(onTrackPanelClicked);
