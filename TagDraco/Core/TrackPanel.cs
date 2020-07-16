@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace TagDraco
+namespace TagDraco.Core
 {
     class TrackPanel : Panel
     {
@@ -31,7 +31,8 @@ namespace TagDraco
             this.cover.Image = cover;
             this.cover.Size = new Size(COVER_SIZE, COVER_SIZE);
             this.cover.Location = new Point(COVER_POS_XY, COVER_POS_XY);
-            this.cover.BackColor = Color.FromArgb(10, 10, 14); ;
+            this.cover.BackColor = Color.FromArgb(10, 10, 14);
+            this.cover.Name = "cover";
 
             this.details.Location = new Point(LABELS_X, TITLE_Y);
             this.details.ForeColor = Color.White;
@@ -53,10 +54,8 @@ namespace TagDraco
 
             this.Controls.Add(this.cover);
             this.Controls.Add(this.details);
-
             this.AutoSize = true;
             this.BackColor = DARK_BLAY;
-            this.Cursor = Cursors.Hand;
         }
     }
 }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TagDraco.GUI;
 
-namespace TagDraco
+namespace TagDraco.Core
 {
     static class Program
     {
@@ -16,7 +17,7 @@ namespace TagDraco
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TagDraco());
+            Application.Run(new MainGUI());
         }
     }
 }

@@ -13,13 +13,14 @@ using TagLib;
 using System.Windows.Media.Imaging;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using TagDraco.Core;
 
-namespace TagDraco
+namespace TagDraco.GUI
 {
-    public partial class TagDraco : Form
+    public partial class MainGUI : Form
     {
         const char COMA = ',';
-        const string VERSION = "1.0.0";
+        const string VERSION = "1.1.0";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
 
@@ -28,13 +29,14 @@ namespace TagDraco
         private Color DARK_BLAY = Color.FromArgb(20, 20, 24);
         private Color BLAY = Color.FromArgb(47, 49, 60);
 
-        public TagDraco()
+        public MainGUI()
         {
             InitializeComponent();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Clear(true);
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == "") return;
             if (openFileDialog1.FileNames.Length == 0) return;
@@ -110,9 +112,10 @@ namespace TagDraco
                         read.GetFile().Name
                     );
                 trackPanel.Location = new System.Drawing.Point(10, panelYPos);
-                trackPanel.Click += new EventHandler(onTrackPanelClicked);
-                trackPanel.MouseHover += new EventHandler(onTrackPanelHovered);
-                trackPanel.MouseLeave += new EventHandler(onTrackPanelExited);
+                PictureBox coverBox = (PictureBox)trackPanel.Controls.Find("cover", true)[0];
+                coverBox.Click += new EventHandler(onTrackPanelClicked);
+                coverBox.MouseHover += new EventHandler(onTrackPanelHovered);
+                coverBox.MouseLeave += new EventHandler(onTrackPanelExited);
 
                 this.panel1.Controls.Add(trackPanel);
                 panelYPos += 148;
@@ -142,6 +145,12 @@ namespace TagDraco
 
             try
             {
+               
+                if (tag.Pictures.Length==0)
+                {
+                    pictureBox1.Image = null;
+                    return;
+                } 
                 IPicture p = tag.Pictures[0];
                 MemoryStream ms = new MemoryStream(p.Data.Data);
                 ms.Seek(0, SeekOrigin.Begin);
@@ -164,23 +173,26 @@ namespace TagDraco
 
         private void onTrackPanelClicked(object sender, EventArgs e)
         {
-            TrackPanel p = (TrackPanel)sender;
-            p.BackColor = BLAY;
+            PictureBox pi = (PictureBox)sender;
+            Panel panel = (Panel)pi.Parent;
+            panel.BackColor = DARK_BLAY;
             Clear(false);
-            selectedIndex = (short)panel1.Controls.IndexOf(p);
-            loadMetadataIntoDetailsBox(tagMap[panel1.Controls.IndexOf(p)].GetFileTags());
+            selectedIndex = (short)panel1.Controls.IndexOf(panel);
+            loadMetadataIntoDetailsBox(tagMap[panel1.Controls.IndexOf(panel)].GetFileTags());
         }
 
         private void onTrackPanelHovered(object sender, EventArgs e)
         {
-            TrackPanel p = (TrackPanel)sender;
-            p.BackColor = BLAY;
+            PictureBox pi = (PictureBox)sender;
+            Panel panel = (Panel)pi.Parent;
+            panel.BackColor = BLAY;
         }
 
         private void onTrackPanelExited(object sender, EventArgs e)
         {
-            TrackPanel p = (TrackPanel)sender;
-            p.BackColor = DARK_BLAY;
+            PictureBox pi = (PictureBox)sender;
+            Panel panel = (Panel)pi.Parent;
+            panel.BackColor = DARK_BLAY;
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -217,6 +229,25 @@ namespace TagDraco
         {
             openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
             imageBrowser.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+        }
+
+        private void updateAlbum_Click(object sender, EventArgs e)
+        {
+            foreach(Reader reader in tagMap.Values)
+            {
+                reader.GetFileTags().Title = titleBox.Text;
+                reader.GetFileTags().Performers = contArtistsBox.Text.Split(COMA);
+                reader.GetFileTags().AlbumArtists = artistBox.Text.Split(COMA);
+                reader.GetFileTags().Album = albumBox.Text;
+                reader.GetFileTags().Year = uint.Parse(yearBox.Text);
+                reader.GetFileTags().Genres = genreBox.Text.Split(COMA);
+                Writer writer = new Writer(reader);
+                writer.UpdateTags(reader.GetFile(), pictureBox1.Image);
+            }
+            
+            tagMap[selectedIndex].GetTagsFromFile(tagMap[selectedIndex].GetCurrentFilePath());
+            ClearTrackPanels();
+            LoadMetaData(selectedIndex);
         }
     }
 }

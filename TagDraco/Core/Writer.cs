@@ -5,7 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using TagLib;
 
-namespace TagDraco
+namespace TagDraco.Core
 {
     class Writer
     {
@@ -27,13 +27,11 @@ namespace TagDraco
         private bool SaveMetadataToFile(TagLib.File file, Image cover)
         {
             try {
-
                 if (!cover.Equals(null)) { 
-                    string fileName = System.IO.Path.GetTempPath() + TEMP_FILE_NAME;
-                    cover.Save(Path.GetTempPath() + TEMP_FILE_NAME, ImageFormat.Png);
+                    string fileName = Path.GetTempPath() + TEMP_FILE_NAME;
+                    cover.Save(fileName, ImageFormat.Png);
                     Picture picture = new Picture(fileName);
                     file.Tag.Pictures =new Picture[] { picture };
-                    cover.Dispose();
                 }
                 file.Save();
                 Console.WriteLine("[Writer] - Succesfully saved tags for file {0}",file.Name);
@@ -42,7 +40,8 @@ namespace TagDraco
             }
             catch(Exception e)
             {
-                Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0}",e.Message);
+                Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0} {1}",e.Message, e.StackTrace);
+                MessageBox.Show("An error occured : "+e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
