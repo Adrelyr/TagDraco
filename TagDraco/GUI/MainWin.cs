@@ -101,16 +101,7 @@ namespace TagDraco.GUI
                     finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(128, 128));
                 }
                 //cover.Dispose();
-                TrackPanel trackPanel = new TrackPanel(
-                        read.GetFileTags().Title,
-                        read.GetFileTags().Performers,
-                        read.GetFileTags().Album,
-                        read.GetFileTags().Year,
-                        read.GetFileTags().Genres,
-                        read.GetFileTags().Track,
-                        finalCover,
-                        read.GetFile().Name
-                    );
+                TrackPanel trackPanel = new TrackPanel(read, finalCover, read.GetFile().Name);
                 trackPanel.Location = new System.Drawing.Point(10, panelYPos);
                 PictureBox coverBox = (PictureBox)trackPanel.Controls.Find("cover", true)[0];
                 coverBox.Click += new EventHandler(onTrackPanelClicked);
@@ -118,7 +109,7 @@ namespace TagDraco.GUI
                 coverBox.MouseLeave += new EventHandler(onTrackPanelExited);
 
                 this.panel1.Controls.Add(trackPanel);
-                panelYPos += 148;
+                panelYPos += 230;
                 //finalCover.Dispose();
             }
             loadMetadataIntoDetailsBox(tagMap[index].GetFileTags());
