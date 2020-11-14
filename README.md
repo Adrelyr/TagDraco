@@ -1,5 +1,5 @@
 # **TagDraco : Simple MP3 metadata editing tool**
-Version 1.0.0\
+Version 1.2.16\
 This simple tool was made for all people wanting to easily change their mp3 metadata.
 Although Windows can do such a thing, it does not allow you to change the Album cover :)
 
@@ -12,9 +12,9 @@ Roadmap :
 
 *The look is subject to change, but here's how it looks like currently*
 ![The look is subject to change, but here's how it looks like currently
-](https://github.com/Dreregon/Tag-Draco/blob/master/TagDraco_2020-07-11_17-27-59.png)
+](https://github.com/Adrelyr/Tag-Draco/blob/master/image.png)
 
 Feedback is welcome !
 
-**-Dreregon**
+**-Adrelyr**
  
