@@ -1,33 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
-using System.Windows;
-using TagLib;
 using System.Windows.Media.Imaging;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using TagDraco.Core;
+using TagLib;
 
 namespace TagDraco.GUI
 {
     public partial class MainGUI : Form
     {
-        const char COMA = ',';
+        const short IMG_SIZE = 256;
+        const char COMA = ';';
         const string VERSION = "1.1.0";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
 
         private short selectedIndex = 0;
 
-        private Color DARK_BLAY = Color.FromArgb(20, 20, 24);
-        private Color BLAY = Color.FromArgb(47, 49, 60);
+        private readonly Color DARK_BLAY = Color.FromArgb(20, 20, 24);
+        private readonly Color BLAY = Color.FromArgb(47, 49, 60);
 
         public MainGUI()
         {
@@ -40,10 +34,15 @@ namespace TagDraco.GUI
             openFileDialog1.ShowDialog();
             if (openFileDialog1.FileName == "") return;
             if (openFileDialog1.FileNames.Length == 0) return;
+            
             int index = 0;
-            foreach(String fileName in openFileDialog1.FileNames) { 
+            progressBar1.Maximum = openFileDialog1.FileNames.Length * 2;
+            foreach (String fileName in openFileDialog1.FileNames) { 
                 tagMap.Add(index, new Reader(fileName));
                 Console.WriteLine("[Main] - Loaded tags from file {0} at index {1}", fileName, index);
+                progressBar1.Value += 1;
+                status.Text = "Reading file " +index.ToString()+" out of "+openFileDialog1.FileNames.Length.ToString() + "...";
+                status.Update();
                 index++;
             }
             LoadMetaData(0);
@@ -80,13 +79,18 @@ namespace TagDraco.GUI
             ClearTrackPanels();
             GC.Collect();
             Clear(false);
-           
-            int panelYPos = 10;
-            foreach(Reader read in tagMap.Values)
+            int panelYPos=10;
+            status.Text = "Displaying " + tagMap.Count.ToString() + " values...";
+            status.Refresh();
+            status.Update();
+            Thread.Sleep(10);
+
+            foreach (Reader read in tagMap.Values)
             {
                 IPicture p = null;
                 Image finalCover = null;
-                if (read.GetFileTags().Pictures.Length != 0) { 
+                if (read.GetFileTags().Pictures.Length != 0)
+                {
                     p = read.GetFileTags().Pictures[0];
                     MemoryStream ms = new MemoryStream(p.Data.Data);
                     ms.Seek(0, SeekOrigin.Begin);
@@ -98,63 +102,62 @@ namespace TagDraco.GUI
                     bitmap.Freeze();
 
                     Bitmap cover = Utils.BitmapImage2Bitmap(bitmap);
-                    finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(128, 128));
+                    finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(24, 24));
                 }
                 //cover.Dispose();
-                TrackPanel trackPanel = new TrackPanel(read, finalCover, read.GetFile().Name);
+                TrackPanel trackPanel = new TrackPanel(read.GetFile().Name, finalCover, read.GetFileTags().Title);
                 trackPanel.Location = new System.Drawing.Point(10, panelYPos);
-                PictureBox coverBox = (PictureBox)trackPanel.Controls.Find("cover", true)[0];
-                coverBox.Click += new EventHandler(onTrackPanelClicked);
-                coverBox.MouseHover += new EventHandler(onTrackPanelHovered);
-                coverBox.MouseLeave += new EventHandler(onTrackPanelExited);
+                trackPanel.Padding = new Padding(10);
+                trackPanel.Size = new Size(panel1.Width - 20, 32);
 
                 this.panel1.Controls.Add(trackPanel);
-                panelYPos += 230;
+                trackPanel.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
+                trackPanel.label.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
+                panelYPos += 42;
                 //finalCover.Dispose();
+                progressBar1.Value += 1;
+                
             }
             loadMetadataIntoDetailsBox(tagMap[index].GetFileTags());
+            status.Text = "Done.";
+        }
+
+        void onTrackPanelClick(object sender, MouseEventArgs e)
+        {
+            Control panel = (Control)sender;
+            Clear(false);
+            if (sender is Label)
+            {
+                selectedIndex = (short)panel1.Controls.IndexOf(panel.Parent);
+                Console.WriteLine(selectedIndex);
+            }
+            else
+            {
+                selectedIndex = (short)panel1.Controls.IndexOf(panel);
+                Console.WriteLine(selectedIndex);
+            }
+            loadMetadataIntoDetailsBox(tagMap[selectedIndex].GetFileTags());
         }
 
         private void loadMetadataIntoDetailsBox(Tag tag)
         {
             titleBox.Text = tag.Title;
             albumBox.Text = tag.Album;
-
-            foreach (String s in tag.AlbumArtists)
-                artistBox.Text = artistBox.Text + s + COMA;
-
+            artistBox.Text = tag.JoinedAlbumArtists;
             titleBox.Text = tag.Title;
             yearBox.Text = tag.Year.ToString();
-
-            foreach (String s in tag.Genres)
-                genreBox.Text = genreBox.Text + s + COMA;
-
+            genreBox.Text = tag.JoinedGenres;
             trackBox.Text = tag.Track.ToString();
-
-            foreach (String s in tag.Performers)
-                contArtistsBox.Text = contArtistsBox.Text + s + COMA;
+            contArtistsBox.Text = tag.JoinedPerformers;
 
             try
             {
-               
                 if (tag.Pictures.Length==0)
                 {
                     pictureBox1.Image = null;
                     return;
                 } 
-                IPicture p = tag.Pictures[0];
-                MemoryStream ms = new MemoryStream(p.Data.Data);
-                ms.Seek(0, SeekOrigin.Begin);
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.StreamSource = ms;
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
-                bitmap.Freeze();
-
-                Bitmap b = Utils.BitmapImage2Bitmap(bitmap);
-                pictureBox1.Image = Utils.ResizeImage(b, new System.Drawing.Size(256, 256));
-                //b.Dispose();
+                pictureBox1.Image = IPictureToImage(tag.Pictures[0], IMG_SIZE);
             }
             catch
             {
@@ -162,28 +165,19 @@ namespace TagDraco.GUI
             }
         }
 
-        private void onTrackPanelClicked(object sender, EventArgs e)
+        private Image IPictureToImage(IPicture p, int size)
         {
-            PictureBox pi = (PictureBox)sender;
-            Panel panel = (Panel)pi.Parent;
-            panel.BackColor = DARK_BLAY;
-            Clear(false);
-            selectedIndex = (short)panel1.Controls.IndexOf(panel);
-            loadMetadataIntoDetailsBox(tagMap[panel1.Controls.IndexOf(panel)].GetFileTags());
-        }
+            MemoryStream ms = new MemoryStream(p.Data.Data);
+            ms.Seek(0, SeekOrigin.Begin);
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.StreamSource = ms;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            bitmap.Freeze();
 
-        private void onTrackPanelHovered(object sender, EventArgs e)
-        {
-            PictureBox pi = (PictureBox)sender;
-            Panel panel = (Panel)pi.Parent;
-            panel.BackColor = BLAY;
-        }
-
-        private void onTrackPanelExited(object sender, EventArgs e)
-        {
-            PictureBox pi = (PictureBox)sender;
-            Panel panel = (Panel)pi.Parent;
-            panel.BackColor = DARK_BLAY;
+            Bitmap b = Utils.BitmapImage2Bitmap(bitmap);
+            return Utils.ResizeImage(b, new System.Drawing.Size(size, size));
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -197,10 +191,19 @@ namespace TagDraco.GUI
             MessageBox.Show(ABOUT_STRING, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        void ClearTrackPanels()
+        {
+            panel1.Controls.Clear();
+        }
+
         void Clear(bool clearDictionary)
         {
             GC.Collect();
-            if(clearDictionary) tagMap.Clear();
+            if (clearDictionary)
+            {
+                tagMap.Clear();
+                progressBar1.Value = 0;
+            }
             titleBox.Text = "";
             albumBox.Text = "";
             artistBox.Text = "";
@@ -209,11 +212,8 @@ namespace TagDraco.GUI
             yearBox.Text = "";
             contArtistsBox.Text = "";
             pictureBox1.Image = null;
-        }
-
-        void ClearTrackPanels()
-        {
-            panel1.Controls.Clear();
+            status.Text = "Waiting.";
+            
         }
 
         private void TagDraco_Load(object sender, EventArgs e)

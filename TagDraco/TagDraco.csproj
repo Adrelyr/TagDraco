@@ -87,6 +87,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\TrackPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GUI\MainWin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,14 +99,8 @@
     <Compile Include="Core\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Reader.cs" />
-    <Compile Include="Core\TrackPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Core\Writer.cs" />
-    <EmbeddedResource Include="Core\TrackPanel.resx">
-      <DependentUpon>TrackPanel.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainWin.resx">
       <DependentUpon>MainWin.cs</DependentUpon>
     </EmbeddedResource>
