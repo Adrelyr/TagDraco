@@ -14,7 +14,7 @@ namespace TagDraco.GUI
     {
         const short IMG_SIZE = 256;
         const char COMA = ';';
-        const string VERSION = "1.1.0";
+        const string VERSION = "1.2.16";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
 
