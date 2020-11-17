@@ -14,7 +14,7 @@ namespace TagDraco.GUI
     {
         const short IMG_SIZE = 256;
         const char COMA = ';';
-        const string VERSION = "1.2.16";
+        const string VERSION = "1.2.17";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
 
@@ -115,7 +115,13 @@ namespace TagDraco.GUI
                 trackPanel.label.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
                 panelYPos += 42;
                 //finalCover.Dispose();
-                progressBar1.Value += 1;
+                if(progressBar1.Value == progressBar1.Maximum)
+                {
+                    progressBar1.Value = progressBar1.Maximum/2;
+                }
+                
+                    progressBar1.Value += 1;
+                
                 
             }
             loadMetadataIntoDetailsBox(tagMap[index].GetFileTags());
@@ -129,12 +135,10 @@ namespace TagDraco.GUI
             if (sender is Label)
             {
                 selectedIndex = (short)panel1.Controls.IndexOf(panel.Parent);
-                Console.WriteLine(selectedIndex);
             }
             else
             {
                 selectedIndex = (short)panel1.Controls.IndexOf(panel);
-                Console.WriteLine(selectedIndex);
             }
             loadMetadataIntoDetailsBox(tagMap[selectedIndex].GetFileTags());
         }
