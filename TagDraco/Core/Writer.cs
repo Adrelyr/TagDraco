@@ -32,6 +32,7 @@ namespace TagDraco.Core
                     cover.Save(fileName, ImageFormat.Png);
                     Picture picture = new Picture(fileName);
                     file.Tag.Pictures =new Picture[] { picture };
+                    System.IO.File.Delete(fileName);
                 }
                 file.Save();
                 Console.WriteLine("[Writer] - Succesfully saved tags for file {0}",file.Name);

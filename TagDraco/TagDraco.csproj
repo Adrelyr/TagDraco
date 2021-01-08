@@ -13,7 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>L:\Libraries\Desktop\TagDraco\</PublishUrl>
+    <PublishUrl>D:\Programs\TagDraco\1.2.18\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -23,8 +23,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.2.17.%2a</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.2.18.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>tagdraco.ico</ApplicationIcon>
+    <ApplicationIcon>tagdraco2.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>1F2DA6784ADE1EFB162CB639D4A7C4EDFAEABFCE</ManifestCertificateThumbprint>
@@ -63,6 +63,7 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
@@ -99,7 +100,7 @@
     <Compile Include="Core\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Reader.cs" />
-    <Compile Include="Core\Utils.cs" />
+    <Compile Include="Core\PictureUtils.cs" />
     <Compile Include="Core\Writer.cs" />
     <EmbeddedResource Include="GUI\MainWin.resx">
       <DependentUpon>MainWin.cs</DependentUpon>
@@ -130,7 +131,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\TagDraco_file %28Custom%29.png" />
     <None Include="Resources\TagDraco_Open %28Custom%29.png" />
+    <None Include="Resources\Help %28Custom%29.png" />
+    <None Include="Resources\clear %28Custom%29.png" />
+    <None Include="Resources\about %28Custom%29.png" />
+    <Content Include="tagdraco2.ico" />
     <None Include="Resources\TagDraco_Help 16.png" />
     <None Include="Resources\TagDraco_File 16.png" />
     <None Include="Resources\TagDraco_Clear 16.png" />

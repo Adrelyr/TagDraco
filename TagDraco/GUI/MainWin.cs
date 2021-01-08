@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -14,14 +15,15 @@ namespace TagDraco.GUI
     {
         const short IMG_SIZE = 256;
         const char COMA = ';';
-        const string VERSION = "1.2.17";
+        const string VERSION = "1.2.18";
         const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
-
+        
         private short selectedIndex = 0;
 
         private readonly Color DARK_BLAY = Color.FromArgb(20, 20, 24);
         private readonly Color BLAY = Color.FromArgb(47, 49, 60);
+        private PictureUtils utils = new PictureUtils();
 
         public MainGUI()
         {
@@ -50,6 +52,7 @@ namespace TagDraco.GUI
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
+            if (tagMap.Count == 0) return;
             tagMap[selectedIndex].GetFileTags().Title = titleBox.Text;
             tagMap[selectedIndex].GetFileTags().Performers = contArtistsBox.Text.Split(COMA);
             tagMap[selectedIndex].GetFileTags().AlbumArtists = artistBox.Text.Split(COMA);
@@ -70,9 +73,8 @@ namespace TagDraco.GUI
             if (imageBrowser.FileName==("")) return;
 
             Bitmap newBitmap = new Bitmap(imageBrowser.FileName);
-            pictureBox1.Image = Utils.ResizeImage(newBitmap, new System.Drawing.Size(256, 256));
+            pictureBox1.Image = utils.ResizeImage(newBitmap, new System.Drawing.Size(256, 256));
             newBitmap.Dispose();
-
         }
         void LoadMetaData(int index)
         { 
@@ -92,17 +94,7 @@ namespace TagDraco.GUI
                 if (read.GetFileTags().Pictures.Length != 0)
                 {
                     p = read.GetFileTags().Pictures[0];
-                    MemoryStream ms = new MemoryStream(p.Data.Data);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.StreamSource = ms;
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.EndInit();
-                    bitmap.Freeze();
-
-                    Bitmap cover = Utils.BitmapImage2Bitmap(bitmap);
-                    finalCover = Utils.ResizeImage(cover, new System.Drawing.Size(24, 24));
+                    finalCover = utils.IPictureToImage(p, 24);
                 }
                 //cover.Dispose();
                 TrackPanel trackPanel = new TrackPanel(read.GetFile().Name, finalCover, read.GetFileTags().Title);
@@ -121,8 +113,6 @@ namespace TagDraco.GUI
                 }
                 
                     progressBar1.Value += 1;
-                
-                
             }
             loadMetadataIntoDetailsBox(tagMap[index].GetFileTags());
             status.Text = "Done.";
@@ -161,7 +151,7 @@ namespace TagDraco.GUI
                     pictureBox1.Image = null;
                     return;
                 } 
-                pictureBox1.Image = IPictureToImage(tag.Pictures[0], IMG_SIZE);
+                pictureBox1.Image = utils.IPictureToImage(tag.Pictures[0], IMG_SIZE);
             }
             catch
             {
@@ -169,20 +159,6 @@ namespace TagDraco.GUI
             }
         }
 
-        private Image IPictureToImage(IPicture p, int size)
-        {
-            MemoryStream ms = new MemoryStream(p.Data.Data);
-            ms.Seek(0, SeekOrigin.Begin);
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.StreamSource = ms;
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.EndInit();
-            bitmap.Freeze();
-
-            Bitmap b = Utils.BitmapImage2Bitmap(bitmap);
-            return Utils.ResizeImage(b, new System.Drawing.Size(size, size));
-        }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -228,6 +204,7 @@ namespace TagDraco.GUI
 
         private void updateAlbum_Click(object sender, EventArgs e)
         {
+            if (tagMap.Count == 0) return;
             foreach(Reader reader in tagMap.Values)
             {
                 reader.GetFileTags().Title = titleBox.Text;

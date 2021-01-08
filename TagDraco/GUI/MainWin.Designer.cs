@@ -1,4 +1,6 @@
-﻿namespace TagDraco.GUI
+﻿using System.Drawing;
+
+namespace TagDraco.GUI
 {
     partial class MainGUI
     {
@@ -37,6 +39,8 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.status = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.updateAlbum = new System.Windows.Forms.Button();
             this.trackBox = new System.Windows.Forms.TextBox();
             this.genreBox = new System.Windows.Forms.TextBox();
@@ -58,8 +62,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.imageBrowser = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.status = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -87,14 +89,14 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.clearToolStripMenuItem});
-            this.fileToolStripMenuItem.Image = global::TagDraco.Properties.Resources.TagDraco_File_16;
+            this.fileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("fileToolStripMenuItem.Image")));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Image = global::TagDraco.Properties.Resources.TagDraco_Open;
+            this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
@@ -102,7 +104,7 @@
             // 
             // clearToolStripMenuItem
             // 
-            this.clearToolStripMenuItem.Image = global::TagDraco.Properties.Resources.TagDraco_Clear_16;
+            this.clearToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearToolStripMenuItem.Image")));
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
             this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.clearToolStripMenuItem.Text = "Clear";
@@ -112,14 +114,14 @@
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Image = global::TagDraco.Properties.Resources.TagDraco_Help_16;
+            this.helpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripMenuItem.Image")));
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.Image = global::TagDraco.Properties.Resources.TagDraco_About_16;
+            this.aboutToolStripMenuItem.Image = global::TagDraco.Properties.Resources.about__Custom_;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "About...";
@@ -158,16 +160,39 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Details";
             // 
+            // status
+            // 
+            this.status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.status.AutoSize = true;
+            this.status.Location = new System.Drawing.Point(8, 628);
+            this.status.Name = "status";
+            this.status.Size = new System.Drawing.Size(46, 13);
+            this.status.TabIndex = 17;
+            this.status.Text = "Waiting.";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.Location = new System.Drawing.Point(11, 644);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(254, 19);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.TabIndex = 16;
+            // 
             // updateAlbum
             // 
             this.updateAlbum.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.updateAlbum.ForeColor = System.Drawing.Color.Black;
+            this.updateAlbum.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
+            this.updateAlbum.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.updateAlbum.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.updateAlbum.ForeColor = System.Drawing.Color.White;
             this.updateAlbum.Location = new System.Drawing.Point(135, 669);
             this.updateAlbum.Name = "updateAlbum";
             this.updateAlbum.Size = new System.Drawing.Size(130, 32);
             this.updateAlbum.TabIndex = 15;
             this.updateAlbum.Text = "Update Album";
-            this.updateAlbum.UseVisualStyleBackColor = true;
+            this.updateAlbum.UseVisualStyleBackColor = false;
             this.updateAlbum.Click += new System.EventHandler(this.updateAlbum_Click);
             // 
             // trackBox
@@ -271,19 +296,25 @@
             // changePicBtn
             // 
             this.changePicBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.changePicBtn.ForeColor = System.Drawing.Color.Black;
+            this.changePicBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
+            this.changePicBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.changePicBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.changePicBtn.ForeColor = System.Drawing.Color.White;
             this.changePicBtn.Location = new System.Drawing.Point(10, 586);
             this.changePicBtn.Name = "changePicBtn";
             this.changePicBtn.Size = new System.Drawing.Size(256, 23);
             this.changePicBtn.TabIndex = 7;
             this.changePicBtn.Text = "Change picture";
-            this.changePicBtn.UseVisualStyleBackColor = true;
+            this.changePicBtn.UseVisualStyleBackColor = false;
             this.changePicBtn.Click += new System.EventHandler(this.changePicBtnPressed);
             // 
             // changeTagsBtn
             // 
             this.changeTagsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.changeTagsBtn.ForeColor = System.Drawing.Color.Black;
+            this.changeTagsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
+            this.changeTagsBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.changeTagsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.changeTagsBtn.ForeColor = System.Drawing.Color.White;
             this.changeTagsBtn.Location = new System.Drawing.Point(10, 669);
             this.changeTagsBtn.Name = "changeTagsBtn";
             this.changeTagsBtn.Size = new System.Drawing.Size(119, 32);
@@ -363,26 +394,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(518, 718);
             this.panel1.TabIndex = 5;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(11, 644);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(254, 19);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBar1.TabIndex = 16;
-            // 
-            // status
-            // 
-            this.status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.status.AutoSize = true;
-            this.status.Location = new System.Drawing.Point(8, 628);
-            this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(46, 13);
-            this.status.TabIndex = 17;
-            this.status.Text = "Waiting.";
             // 
             // MainGUI
             // 

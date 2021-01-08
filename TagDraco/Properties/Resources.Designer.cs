@@ -63,9 +63,9 @@ namespace TagDraco.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap TagDraco_About_16 {
+        internal static System.Drawing.Bitmap about__Custom_ {
             get {
-                object obj = ResourceManager.GetObject("TagDraco_About 16", resourceCulture);
+                object obj = ResourceManager.GetObject("about__Custom_", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
