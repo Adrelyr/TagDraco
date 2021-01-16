@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Media.Imaging;
 using TagDraco.Core;
+using System.Linq;
 using TagLib;
 
 namespace TagDraco.GUI
@@ -16,7 +14,7 @@ namespace TagDraco.GUI
         const short IMG_SIZE = 256;
         const char COMA = ';';
         const string VERSION = "1.2.18";
-        const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Dreregon.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
+        const string ABOUT_STRING = "TagDraco " + VERSION + " developped by Adrelyr.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
         private Dictionary<int,Reader> tagMap = new Dictionary<int, Reader>();
         
         private short selectedIndex = 0;
@@ -39,30 +37,91 @@ namespace TagDraco.GUI
             
             int index = 0;
             progressBar1.Maximum = openFileDialog1.FileNames.Length * 2;
-            foreach (String fileName in openFileDialog1.FileNames) { 
+            List<string> files = openFileDialog1.FileNames.ToList();
+            List<Reader> tagFiles = files.ConvertAll(filePath => new Reader(filePath));
+
+            tagFiles.Sort(delegate(Reader x, Reader y)
+            {
+                if (x.tagFile.Tag.Track < y.tagFile.Tag.Track)
+                    return -1;
+                else if (x.tagFile.Tag.Track == y.tagFile.Tag.Track)
+                    return 0;
+                else
+                    return 1;
+            });
+
+            foreach(Reader reader in tagFiles)
+            {
+                tagMap.Add(index, reader);
+                progressBar1.Value += 1;
+                status.Text = "Reading file " + index.ToString() + " out of " + openFileDialog1.FileNames.Length.ToString() + "...";
+                status.Update();
+                index++;
+            }
+
+            /*//Probably the worst way to sort by track number but oh well
+            while (files.Count>0)
+            {
+                Reader r = new Reader(files[listIndex]);
+                int track = (int)r.tagFile.Tag.Track;
+                
+                //If the track is 0 (taglib's default for no track number)
+                if (track == 0)
+                {
+                    tagMap.Add(index, r);
+                    index++;
+                    files.RemoveAt(listIndex);
+                    if (listIndex > files.Count - 1)
+                        listIndex = 0;
+                    progressBar1.Value += 1;
+                    status.Text = "Reading file " + index.ToString() + " out of " + openFileDialog1.FileNames.Length.ToString() + "...";
+                    status.Update();
+                    continue;
+                }
+
+                //If the track matches the current index (+1 because tracks start at 1)
+                if (track == index + 1)
+                {
+                    tagMap.Add(index, r);
+                    index++;
+                    files.RemoveAt(listIndex);
+                    if (listIndex > files.Count - 1)
+                        listIndex = 0;
+                    progressBar1.Value += 1;
+                    status.Text = "Reading file " + index.ToString() + " out of " + openFileDialog1.FileNames.Length.ToString() + "...";
+                    status.Update();
+                    continue;
+                }
+
+                listIndex++;
+                if (listIndex > files.Count-1)
+                    listIndex = 0;
+            }*/
+           
+            /*foreach (string fileName in openFileDialog1.FileNames) { 
                 tagMap.Add(index, new Reader(fileName));
                 Console.WriteLine("[Main] - Loaded tags from file {0} at index {1}", fileName, index);
                 progressBar1.Value += 1;
                 status.Text = "Reading file " +index.ToString()+" out of "+openFileDialog1.FileNames.Length.ToString() + "...";
                 status.Update();
                 index++;
-            }
+            }*/
             LoadMetaData(0);
         }
 
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
             if (tagMap.Count == 0) return;
-            tagMap[selectedIndex].GetFileTags().Title = titleBox.Text;
-            tagMap[selectedIndex].GetFileTags().Performers = contArtistsBox.Text.Split(COMA);
-            tagMap[selectedIndex].GetFileTags().AlbumArtists = artistBox.Text.Split(COMA);
-            tagMap[selectedIndex].GetFileTags().Album = albumBox.Text;
-            tagMap[selectedIndex].GetFileTags().Year = uint.Parse(yearBox.Text);
-            tagMap[selectedIndex].GetFileTags().Track = uint.Parse(trackBox.Text);
-            tagMap[selectedIndex].GetFileTags().Genres = genreBox.Text.Split(COMA);
+            tagMap[selectedIndex].tag.Title = titleBox.Text;
+            tagMap[selectedIndex].tag.Performers = contArtistsBox.Text.Split(COMA);
+            tagMap[selectedIndex].tag.AlbumArtists = artistBox.Text.Split(COMA);
+            tagMap[selectedIndex].tag.Album = albumBox.Text;
+            tagMap[selectedIndex].tag.Year = uint.Parse(yearBox.Text);
+            tagMap[selectedIndex].tag.Track = uint.Parse(trackBox.Text);
+            tagMap[selectedIndex].tag.Genres = genreBox.Text.Split(COMA);
             Writer writer = new Writer(tagMap[selectedIndex]);
-            writer.UpdateTags(tagMap[selectedIndex].GetFile(), pictureBox1.Image);
-            tagMap[selectedIndex].GetTagsFromFile(tagMap[selectedIndex].GetCurrentFilePath());
+            writer.UpdateTags(tagMap[selectedIndex].tagFile, pictureBox1.Image);
+            tagMap[selectedIndex].GetTagsFromFile(tagMap[selectedIndex].tagFile.Name);
             ClearTrackPanels();
             LoadMetaData(selectedIndex);
         }
@@ -91,14 +150,13 @@ namespace TagDraco.GUI
             {
                 IPicture p = null;
                 Image finalCover = null;
-                if (read.GetFileTags().Pictures.Length != 0)
+                if (read.tag.Pictures.Length != 0)
                 {
-                    p = read.GetFileTags().Pictures[0];
+                    p = read.tag.Pictures[0];
                     finalCover = utils.IPictureToImage(p, 24);
                 }
-                //cover.Dispose();
-                TrackPanel trackPanel = new TrackPanel(read.GetFile().Name, finalCover, read.GetFileTags().Title);
-                trackPanel.Location = new System.Drawing.Point(10, panelYPos);
+                TrackPanel trackPanel = new TrackPanel(read.tagFile.Name, finalCover, read.tag.Title);
+                trackPanel.Location = new Point(10, panelYPos);
                 trackPanel.Padding = new Padding(10);
                 trackPanel.Size = new Size(panel1.Width - 20, 32);
 
@@ -106,15 +164,14 @@ namespace TagDraco.GUI
                 trackPanel.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
                 trackPanel.label.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
                 panelYPos += 42;
-                //finalCover.Dispose();
+
                 if(progressBar1.Value == progressBar1.Maximum)
                 {
                     progressBar1.Value = progressBar1.Maximum/2;
                 }
-                
                     progressBar1.Value += 1;
             }
-            loadMetadataIntoDetailsBox(tagMap[index].GetFileTags());
+            loadMetadataIntoDetailsBox(tagMap[index].tag);
             status.Text = "Done.";
         }
 
@@ -130,7 +187,7 @@ namespace TagDraco.GUI
             {
                 selectedIndex = (short)panel1.Controls.IndexOf(panel);
             }
-            loadMetadataIntoDetailsBox(tagMap[selectedIndex].GetFileTags());
+            loadMetadataIntoDetailsBox(tagMap[selectedIndex].tag);
         }
 
         private void loadMetadataIntoDetailsBox(Tag tag)
@@ -207,17 +264,17 @@ namespace TagDraco.GUI
             if (tagMap.Count == 0) return;
             foreach(Reader reader in tagMap.Values)
             {
-                reader.GetFileTags().Title = titleBox.Text;
-                reader.GetFileTags().Performers = contArtistsBox.Text.Split(COMA);
-                reader.GetFileTags().AlbumArtists = artistBox.Text.Split(COMA);
-                reader.GetFileTags().Album = albumBox.Text;
-                reader.GetFileTags().Year = uint.Parse(yearBox.Text);
-                reader.GetFileTags().Genres = genreBox.Text.Split(COMA);
+                reader.tag.Title = titleBox.Text;
+                reader.tag.Performers = contArtistsBox.Text.Split(COMA);
+                reader.tag.AlbumArtists = artistBox.Text.Split(COMA);
+                reader.tag.Album = albumBox.Text;
+                reader.tag.Year = uint.Parse(yearBox.Text);
+                reader.tag.Genres = genreBox.Text.Split(COMA);
                 Writer writer = new Writer(reader);
-                writer.UpdateTags(reader.GetFile(), pictureBox1.Image);
+                writer.UpdateTags(reader.tagFile, pictureBox1.Image);
             }
             
-            tagMap[selectedIndex].GetTagsFromFile(tagMap[selectedIndex].GetCurrentFilePath());
+            tagMap[selectedIndex].GetTagsFromFile(tagMap[selectedIndex].tagFile.Name);
             ClearTrackPanels();
             LoadMetaData(selectedIndex);
         }
