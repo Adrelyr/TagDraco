@@ -26,7 +26,7 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>TagDraco</ProductName>
     <PublisherName>Code Wyvern</PublisherName>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.2.18.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -56,19 +56,28 @@
     <ApplicationIcon>tagdraco2.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>1F2DA6784ADE1EFB162CB639D4A7C4EDFAEABFCE</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>A0C290D4CFB7184576DF60DD7A20771B0B32DA03</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>TagDraco_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>tagDracoKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
+  <PropertyGroup>
+    <StartupObject>TagDraco.Core.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>tagDracoKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -127,6 +136,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="tagDracoKey.pfx" />
     <None Include="TagDraco_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
