@@ -8,22 +8,17 @@ namespace TagDraco.Core
     class Reader
     {
         private MainGUI mainWin;
-        public Dictionary<int, TagLib.File> tagFiles { get; }
+        public Dictionary<int, string> sortedFilePaths { get; }
         private List<File> files;
 
         public Reader(MainGUI mainGUI)
         {
             mainWin = mainGUI;
-            tagFiles = new Dictionary<int, File>();
+            sortedFilePaths = new Dictionary<int, string>();
         }
 
         public void CreateTagLibFiles(List<string> filePaths){
            files = filePaths.ConvertAll(filePath => TagLib.File.Create(filePath));
-        }
-
-        public void UpdateFile(string path, int index)
-        {
-
         }
 
         public void SortByTrackNumber()
@@ -42,18 +37,24 @@ namespace TagDraco.Core
             int index = 0;
             foreach (TagLib.File file in files)
             {
-                tagFiles.Add(index, file);
+                sortedFilePaths.Add(index, file.Name);
                 mainWin.UpdateStatus("Loading Files", index, files.Count);
                 index++;
             }
+            files.Clear();
+        }
+
+        public TagLib.Tag GetTagsFromPath(string path)
+        {
+            return File.Create(path).Tag;
         }
 
         public void ClearFiles()
         {
-            tagFiles.Clear();
+            sortedFilePaths.Clear();
         }
 
-        public bool IsEmpty => tagFiles.Count == 0;
+        public bool IsEmpty => sortedFilePaths.Count == 0;
 
         ~Reader(){}
     }

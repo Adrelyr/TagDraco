@@ -12,32 +12,40 @@ namespace TagDraco.Core
     class Writer
     {
         public const string TEMP_FILE_NAME = "tagDracoTemp.png";
-        private MainGUI mainGUI;
 
-        public Writer(MainGUI mainGUI)
+        public Writer()
         {
-            this.mainGUI = mainGUI;
         }
 
         ~Writer() {}
 
-        public TagLib.File UpdateFile(TagLib.File file, Image cover, string title, string performers, string albumartists, string album, uint year, uint track, string genres)
-        {
-            file.Tag.Title = title;
-            file.Tag.Performers = performers.Split(',');
-            file.Tag.AlbumArtists = albumartists.Split(',');
-            file.Tag.Album = album;
-            file.Tag.Year = year;
-            file.Tag.Track = track;
-            file.Tag.Genres = genres.Split(',');
-            return SaveMetadataToFile(file, cover);
-        }
-
-        public bool UpdateAlbum(Dictionary<int,TagLib.File> tagFile, string albumName, string performers, string artist, Image Cover, uint year, string genre)
+        public bool UpdateFile(string path, Image cover, string title, string performers, string albumartists, string album, uint year, uint track, string genres)
         {
             try { 
-                foreach(TagLib.File file in tagFile.Values)
+                TagLib.File file = TagLib.File.Create(path);
+                file.Tag.Title = title;
+                file.Tag.Performers = performers.Split(',');
+                file.Tag.AlbumArtists = albumartists.Split(',');
+                file.Tag.Album = album;
+                file.Tag.Year = year;
+                file.Tag.Track = track;
+                file.Tag.Genres = genres.Split(',');
+                return true;
+            }catch(Exception e)
+            {
+                Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0} {1}", e.Message, e.StackTrace);
+                MessageBox.Show("An error occured : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            
+        }
+
+        public bool UpdateAlbum(Dictionary<int,string> filePaths, string albumName, string performers, string artist, Image Cover, uint year, string genre)
+        {
+            try { 
+                foreach(string path in filePaths.Values)
                 {
+                    TagLib.File file = TagLib.File.Create(path);
                     file.Tag.Album = albumName;
                     file.Tag.Performers = performers.Split(',');
                     file.Tag.AlbumArtists = artist.Split(',');

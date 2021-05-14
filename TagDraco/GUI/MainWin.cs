@@ -16,11 +16,16 @@ namespace TagDraco.GUI
         const char COMA = ';';
         static string VERSION;
         static string ABOUT_STRING;
-        
+        const int TRACKPANEL_Y_OFFSET = 42;
+
+        MouseEventHandler mouseClick; 
+
         private short selectedIndex = 0;
 
         private readonly Color DARK_BLAY = Color.FromArgb(20, 20, 24);
         private readonly Color BLAY = Color.FromArgb(47, 49, 60);
+
+
         private PictureUtils utils = new PictureUtils();
 
         private Reader tagReader;
@@ -38,6 +43,8 @@ namespace TagDraco.GUI
                 VERSION = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
             }
             ABOUT_STRING = "TagDraco " + VERSION + " developped by Adrelyr.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
+            
+            mouseClick = new MouseEventHandler(onTrackPanelClick);
         }
 
         public void InitStatus(int total)
@@ -60,6 +67,7 @@ namespace TagDraco.GUI
             if (openFileDialog1.FileName == "") return;
             if (openFileDialog1.FileNames.Length == 0) return;
             Properties.Settings.Default.lastMusicPath = Path.GetDirectoryName(openFileDialog1.FileName);
+            Properties.Settings.Default.Save();
             openFileDialog1.InitialDirectory = Properties.Settings.Default.lastMusicPath;
             List<string> files = openFileDialog1.FileNames.ToList();
             tagReader.CreateTagLibFiles(files);
@@ -71,7 +79,7 @@ namespace TagDraco.GUI
         private void saveMetadataBtnPressed(object sender, EventArgs e)
         {
             if (tagReader.IsEmpty) return;
-            Writer writer = new Writer(this);
+            Writer writer = new Writer();
 
             string title = titleBox.Text;
             string performers = contArtistsBox.Text;
@@ -81,7 +89,7 @@ namespace TagDraco.GUI
             uint track = uint.Parse(trackBox.Text);
             string genres = genreBox.Text;
             
-            tagReader.tagFiles[selectedIndex] = writer.UpdateFile(tagReader.tagFiles[selectedIndex], pictureBox1.Image, title, performers, albumArtists
+            writer.UpdateFile(tagReader.sortedFilePaths[selectedIndex], pictureBox1.Image, title, performers, albumArtists
                 ,album, year, track, genres);
             
             ClearTrackPanels();
@@ -98,59 +106,68 @@ namespace TagDraco.GUI
             newBitmap.Dispose();
             Properties.Settings.Default.lastImagePath = Path.GetDirectoryName(imageBrowser.FileName);
             imageBrowser.InitialDirectory = Properties.Settings.Default.lastImagePath;
+            Properties.Settings.Default.Save();
         }
+
         void LoadMetaData(int index)
         { 
             ClearTrackPanels();
-            GC.Collect();
             Clear(false);
             int panelYPos=10;
-            int totalValues = tagReader.tagFiles.Count;
+            int totalValues = tagReader.sortedFilePaths.Count;
             Thread.Sleep(10);
             InitStatus(totalValues);
 
-            foreach (TagLib.File file in tagReader.tagFiles.Values)
+            Dictionary<uint, Image> hashCodes = new Dictionary<uint, Image>();
+
+            foreach (string path in tagReader.sortedFilePaths.Values)
             {
-                IPicture p = null;
+                IPicture iPicture = null;
                 Image finalCover = null;
-                if (file.Tag.Pictures.Length != 0)
+                if (tagReader.GetTagsFromPath(path).Pictures.Length != 0)
                 {
-                    p = file.Tag.Pictures[0];
-                    finalCover = utils.IPictureToImage(p, 24);
+                    iPicture = tagReader.GetTagsFromPath(path).Pictures[0];
+                    uint hash = iPicture.Data.Checksum;
+                    if (!hashCodes.ContainsKey(hash))
+                        hashCodes.Add(hash, utils.IPictureToImage(iPicture, 24));
+                    finalCover = hashCodes[hash];
                 }
-                TrackPanel trackPanel = new TrackPanel(file.Name, finalCover, file.Tag.Title);
-                trackPanel.Location = new Point(10, panelYPos);
-                trackPanel.Padding = new Padding(10);
-                trackPanel.Size = new Size(panel1.Width - 20, 32);
+                TrackPanel trackPanel = new TrackPanel(path, finalCover, tagReader.GetTagsFromPath(path).Title)
+                {
+                    Location = new Point(10, panelYPos),
+                    Size = new Size(mainPanel.ClientSize.Width - 20, 32)
+                };
+                mainPanel.Controls.Add(trackPanel);
+                
+                trackPanel.MouseClick += mouseClick;
+                trackPanel.Label.MouseClick += mouseClick;
+                panelYPos += TRACKPANEL_Y_OFFSET;
 
-                this.panel1.Controls.Add(trackPanel);
-                trackPanel.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
-                trackPanel.label.MouseClick += new MouseEventHandler(this.onTrackPanelClick);
-                panelYPos += 42;
-
-                UpdateStatus("Displaying Files", (int)panelYPos / 42, totalValues);
+                UpdateStatus("Displaying Files", (panelYPos / 42), totalValues);
             }
-            loadMetadataIntoDetailsBox(tagReader.tagFiles[index].Tag);
+            loadMetadataIntoDetailsBox(tagReader.GetTagsFromPath(tagReader.sortedFilePaths[index]));
             status.Text = "Done.";
         }
 
         void onTrackPanelClick(object sender, MouseEventArgs e)
         {
+            GC.Collect();
             Control panel = (Control)sender;
             Clear(false);
             if (sender is Label)
             {
-                selectedIndex = (short)panel1.Controls.IndexOf(panel.Parent);
+                selectedIndex = (short)mainPanel.Controls.IndexOf(panel.Parent);
             }
             else
             {
-                selectedIndex = (short)panel1.Controls.IndexOf(panel);
+                selectedIndex = (short)mainPanel.Controls.IndexOf(panel);
             }
-            loadMetadataIntoDetailsBox(tagReader.tagFiles[selectedIndex].Tag);
+            loadMetadataIntoDetailsBox(tagReader.GetTagsFromPath(tagReader.sortedFilePaths[selectedIndex]));
         }
 
         private void loadMetadataIntoDetailsBox(Tag tag)
         {
+            
             titleBox.Text = tag.Title;
             albumBox.Text = tag.Album;
             artistBox.Text = tag.JoinedAlbumArtists;
@@ -189,12 +206,16 @@ namespace TagDraco.GUI
 
         void ClearTrackPanels()
         {
-            panel1.Controls.Clear();
+            foreach(Control control in mainPanel.Controls)
+            {
+                control.Dispose();
+            }
+            mainPanel.Controls.Clear();
+            
         }
 
         void Clear(bool clearDictionary)
         {
-            GC.Collect();
             if (clearDictionary)
             {
                 tagReader.ClearFiles();
@@ -209,7 +230,6 @@ namespace TagDraco.GUI
             contArtistsBox.Text = "";
             pictureBox1.Image = null;
             status.Text = "Waiting.";
-            
         }
 
         private void TagDraco_Load(object sender, EventArgs e)
@@ -225,6 +245,7 @@ namespace TagDraco.GUI
             }
             openFileDialog1.InitialDirectory = Properties.Settings.Default.lastMusicPath;
             imageBrowser.InitialDirectory = Properties.Settings.Default.lastImagePath;
+            Properties.Settings.Default.Save();
         }
 
         private void updateAlbum_Click(object sender, EventArgs e)
@@ -237,9 +258,9 @@ namespace TagDraco.GUI
             string genres = genreBox.Text;
             Image cover = pictureBox1.Image;
 
-            Writer tagWriter = new Writer(this);
+            Writer tagWriter = new Writer();
 
-            tagWriter.UpdateAlbum(tagReader.tagFiles, album, performers, albumArtists, cover, year, genres);
+            tagWriter.UpdateAlbum(tagReader.sortedFilePaths, album, performers, albumArtists, cover, year, genres);
 
             ClearTrackPanels();
             LoadMetaData(selectedIndex);
