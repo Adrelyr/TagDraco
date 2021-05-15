@@ -20,15 +20,11 @@ namespace TagDraco.GUI
 
         MouseEventHandler mouseClick; 
 
-        private short selectedIndex = 0;
+        short selectedIndex = 0;
 
-        private readonly Color DARK_BLAY = Color.FromArgb(20, 20, 24);
-        private readonly Color BLAY = Color.FromArgb(47, 49, 60);
-
-
-        private PictureUtils utils = new PictureUtils();
-
-        private Reader tagReader;
+        PictureUtils utils = new PictureUtils();
+        Reader tagReader;
+        ThemeManager themeManager;
 
         public MainGUI()
         {
@@ -45,6 +41,11 @@ namespace TagDraco.GUI
             ABOUT_STRING = "TagDraco " + VERSION + " developped by Adrelyr.\nUsing TagLib-Sharp by https://github.com/mono/taglib-sharp \n";
             
             mouseClick = new MouseEventHandler(onTrackPanelClick);
+            themeManager = new ThemeManager(this);
+            bool theme = Properties.Settings.Default.theme;
+            themeManager.ChangeTheme( theme ? ThemeManager.Theme.Dark : ThemeManager.Theme.Light);
+            lightThemeMenuItem.Checked = !theme;
+            darkThemeMenuItem.Checked = theme;
         }
 
         public void InitStatus(int total)
@@ -132,7 +133,7 @@ namespace TagDraco.GUI
                         hashCodes.Add(hash, utils.IPictureToImage(iPicture, 24));
                     finalCover = hashCodes[hash];
                 }
-                TrackPanel trackPanel = new TrackPanel(path, finalCover, tagReader.GetTagsFromPath(path).Title)
+                TrackPanel trackPanel = new TrackPanel(path, finalCover, tagReader.GetTagsFromPath(path).Title, themeManager)
                 {
                     Location = new Point(10, panelYPos),
                     Size = new Size(mainPanel.ClientSize.Width - 20, 32)
@@ -264,6 +265,59 @@ namespace TagDraco.GUI
 
             ClearTrackPanels();
             LoadMetaData(selectedIndex);
+        }
+
+        private void DarkThemeOptionClicked(object sender, EventArgs e)
+        {
+            darkThemeMenuItem.Checked = true;
+            lightThemeMenuItem.Checked = false;
+            themeManager.ChangeTheme(ThemeManager.Theme.Dark);
+            Properties.Settings.Default.theme = true;
+            Properties.Settings.Default.Save();
+        }
+
+        private void LightThemeOptionClicked(object sender, EventArgs e)
+        {
+            darkThemeMenuItem.Checked = false;
+            lightThemeMenuItem.Checked = true;
+            themeManager.ChangeTheme(ThemeManager.Theme.Light);
+            Properties.Settings.Default.theme = false;
+            Properties.Settings.Default.Save();
+        }
+
+        private void groupBox1_Paint(object sender, PaintEventArgs e)
+        {
+            RePaintGroupBox(groupBox1, e.Graphics, themeManager.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? Color.White : Color.Black);
+        }
+
+        void RePaintGroupBox(GroupBox box, Graphics g, Color color)
+        {
+            Brush textBrush = new SolidBrush(color);
+            Brush borderBrush = new SolidBrush(color);
+            Pen borderPen = new Pen(borderBrush);
+            SizeF strSize = g.MeasureString(box.Text, box.Font);
+            Rectangle rect = new Rectangle(box.ClientRectangle.X,
+                                           box.ClientRectangle.Y + (int)(strSize.Height / 2),
+                                           box.ClientRectangle.Width - 1,
+                                           box.ClientRectangle.Height - (int)(strSize.Height / 2) - 1);
+
+            // Clear text and border
+            g.Clear(this.BackColor);
+
+            // Draw text
+            g.DrawString(box.Text, box.Font, textBrush, box.Padding.Left, 0);
+
+            // Drawing Border
+            //Left
+            g.DrawLine(borderPen, rect.Location, new Point(rect.X, rect.Y + rect.Height));
+            //Right
+            g.DrawLine(borderPen, new Point(rect.X + rect.Width, rect.Y), new Point(rect.X + rect.Width, rect.Y + rect.Height));
+            //Bottom
+            g.DrawLine(borderPen, new Point(rect.X, rect.Y + rect.Height), new Point(rect.X + rect.Width, rect.Y + rect.Height));
+            //Top1
+            g.DrawLine(borderPen, new Point(rect.X, rect.Y), new Point(rect.X + box.Padding.Left, rect.Y));
+            //Top2
+            g.DrawLine(borderPen, new Point(rect.X + box.Padding.Left + (int)(strSize.Width), rect.Y), new Point(rect.X + rect.Width, rect.Y));
         }
     }
 }

@@ -38,6 +38,10 @@ namespace TagDraco.GUI
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.themeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.darkThemeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lightThemeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.status = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -77,7 +81,8 @@ namespace TagDraco.GUI
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.optionsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(824, 24);
@@ -127,6 +132,39 @@ namespace TagDraco.GUI
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.themeToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // themeToolStripMenuItem
+            // 
+            this.themeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.darkThemeMenuItem,
+            this.lightThemeMenuItem});
+            this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.themeToolStripMenuItem.Text = "Theme";
+            // 
+            // darkThemeMenuItem
+            // 
+            this.darkThemeMenuItem.Checked = true;
+            this.darkThemeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.darkThemeMenuItem.Name = "darkThemeMenuItem";
+            this.darkThemeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.darkThemeMenuItem.Text = "Dark";
+            this.darkThemeMenuItem.Click += new System.EventHandler(this.DarkThemeOptionClicked);
+            // 
+            // lightThemeMenuItem
+            // 
+            this.lightThemeMenuItem.Name = "lightThemeMenuItem";
+            this.lightThemeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lightThemeMenuItem.Text = "Light";
+            this.lightThemeMenuItem.Click += new System.EventHandler(this.LightThemeOptionClicked);
+            // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -159,6 +197,7 @@ namespace TagDraco.GUI
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Details";
+            this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBox1_Paint);
             // 
             // status
             // 
@@ -456,6 +495,10 @@ namespace TagDraco.GUI
         private System.Windows.Forms.Button updateAlbum;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label status;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem themeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem darkThemeMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lightThemeMenuItem;
     }
 }
 

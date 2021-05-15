@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using TagDraco.GUI;
 
 namespace TagDraco.Core
 {
     class TrackPanel : Panel
     {
-        readonly Color LIGHTER_BLAY = Color.FromArgb(67, 69, 80);
-        readonly Color BLAY = Color.FromArgb(47, 49, 60);
-        readonly Color LIGHT_BLAY = Color.FromArgb(57, 59, 70);
-
         readonly Size MAX_SIZE = new Size(2048, 32);
         readonly Size MIN_SIZE = new Size(256, 32);
         readonly Size IMG_SIZE = new Size(24, 24);
@@ -21,11 +18,15 @@ namespace TagDraco.Core
 
         readonly AnchorStyles ANCHOR_MASK = (AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top);
 
+        readonly ThemeManager theme;
+
         public Label Label { get; set; }
-        public TrackPanel(string filename, Image cover, string title)
+        public TrackPanel(string filename, Image cover, string title, ThemeManager theme)
         {
+            this.theme = theme;
+
             Anchor = ANCHOR_MASK;
-            BackColor = BLAY;
+            BackColor = theme.ActiveTheme.Equals(ThemeManager.Theme.Dark)?ThemeManager.Blay:ThemeManager.Blite;
             MinimumSize = MIN_SIZE;
             MaximumSize = MAX_SIZE;
             Padding = PADDING;
@@ -40,7 +41,7 @@ namespace TagDraco.Core
                 Text = filename + "  ---  " + title,
                 AutoSize = true,
                 Location = LBL_LOCATION,
-                ForeColor = Color.White
+                ForeColor = theme.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? Color.White : Color.Black
             };
 
             MouseEventHandler clickHandler = new MouseEventHandler(OnClick);
@@ -56,21 +57,51 @@ namespace TagDraco.Core
             MouseEnter += hoverHandler;
             MouseLeave += exitHandler;
             MouseClick += clickHandler;
+
+            //Paint += new PaintEventHandler(RePaint);
+        }
+
+        private void RePaint(object sender, PaintEventArgs e)
+        {
+            Label.ForeColor = theme.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? Color.White : Color.Black;
+            BackColor = theme.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? ThemeManager.Blay : ThemeManager.Blite;
+            //Refresh();
         }
 
         void OnHover(object sender, EventArgs e)
         {
-            BackColor = LIGHT_BLAY;
+            if (theme.ActiveTheme.Equals(ThemeManager.Theme.Dark)){
+                BackColor = ThemeManager.LightBlay;
+            }
+            else
+            {
+                BackColor = ThemeManager.LighterBlite;
+            }
+           
         }
 
         void OnExit(object sender, EventArgs e)
         {
-            BackColor = BLAY;
+            if (theme.ActiveTheme.Equals(ThemeManager.Theme.Dark))
+            {
+                BackColor = ThemeManager.Blay;
+            }
+            else
+            {
+                BackColor = ThemeManager.Blite;
+            }
         }
 
         void OnClick(object sender, MouseEventArgs e)
         {
-            BackColor = LIGHTER_BLAY;
+            if (theme.ActiveTheme.Equals(ThemeManager.Theme.Dark))
+            {
+                BackColor = ThemeManager.LighterBlay;
+            }
+            else
+            {
+                BackColor = ThemeManager.DarkerBlite;
+            }
         }
 
     }
