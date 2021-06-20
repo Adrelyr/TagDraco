@@ -74,17 +74,14 @@ namespace TagDraco.GUI
                 || control is PictureBox)
             {
                 darkControls.Add(control);
-                Console.WriteLine("dark");
             }
             else if (control is Label || control is GroupBox)
             {
                 whiteOrBlack.Add(control);
-                Console.WriteLine("label");
             }
             else
             {
                 lightControls.Add(control);
-                Console.WriteLine("light");
             }
         }
 

@@ -102,9 +102,9 @@ namespace TagDraco.GUI
             imageBrowser.ShowDialog();
             if (imageBrowser.FileName==("")) return;
 
-            Bitmap newBitmap = new Bitmap(imageBrowser.FileName);
-            pictureBox1.Image = utils.ResizeImage(newBitmap, new System.Drawing.Size(256, 256));
-            newBitmap.Dispose();
+            Image image = Image.FromFile(imageBrowser.FileName);
+            pictureBox1.Image = utils.ResizeImage(image, new Size(256, 256));
+            image.Dispose();
             Properties.Settings.Default.lastImagePath = Path.GetDirectoryName(imageBrowser.FileName);
             imageBrowser.InitialDirectory = Properties.Settings.Default.lastImagePath;
             Properties.Settings.Default.Save();

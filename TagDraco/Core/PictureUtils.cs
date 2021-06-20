@@ -40,7 +40,7 @@ namespace TagDraco.Core
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
             g.Dispose();
-            return (System.Drawing.Image)b;
+            return (Image)b;
         }
 
         public Image IPictureToImage(IPicture p, int size)

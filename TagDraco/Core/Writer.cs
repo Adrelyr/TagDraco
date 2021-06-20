@@ -21,7 +21,7 @@ namespace TagDraco.Core
 
         public bool UpdateFile(string path, Image cover, string title, string performers, string albumartists, string album, uint year, uint track, string genres)
         {
-            try { 
+            try {
                 TagLib.File file = TagLib.File.Create(path);
                 file.Tag.Title = title;
                 file.Tag.Performers = performers.Split(',');
@@ -30,6 +30,7 @@ namespace TagDraco.Core
                 file.Tag.Year = year;
                 file.Tag.Track = track;
                 file.Tag.Genres = genres.Split(',');
+                SaveMetadataToFile(file, cover);
                 return true;
             }catch(Exception e)
             {
