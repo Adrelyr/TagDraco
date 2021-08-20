@@ -74,7 +74,7 @@ namespace TagDraco.GUI
             // openFileDialog1
             // 
             this.openFileDialog1.AddExtension = false;
-            this.openFileDialog1.Filter = "MP3 files (*.mp3)|*.mp3";
+            this.openFileDialog1.Filter = "MP3 files (*.mp3)|*.mp3|Wav files (*.wav)|*.wav";
             this.openFileDialog1.Multiselect = true;
             // 
             // menuStrip
@@ -146,7 +146,7 @@ namespace TagDraco.GUI
             this.darkThemeMenuItem,
             this.lightThemeMenuItem});
             this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
-            this.themeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.themeToolStripMenuItem.Text = "Theme";
             // 
             // darkThemeMenuItem
@@ -154,14 +154,14 @@ namespace TagDraco.GUI
             this.darkThemeMenuItem.Checked = true;
             this.darkThemeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.darkThemeMenuItem.Name = "darkThemeMenuItem";
-            this.darkThemeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.darkThemeMenuItem.Size = new System.Drawing.Size(101, 22);
             this.darkThemeMenuItem.Text = "Dark";
             this.darkThemeMenuItem.Click += new System.EventHandler(this.DarkThemeOptionClicked);
             // 
             // lightThemeMenuItem
             // 
             this.lightThemeMenuItem.Name = "lightThemeMenuItem";
-            this.lightThemeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lightThemeMenuItem.Size = new System.Drawing.Size(101, 22);
             this.lightThemeMenuItem.Text = "Light";
             this.lightThemeMenuItem.Click += new System.EventHandler(this.LightThemeOptionClicked);
             // 
