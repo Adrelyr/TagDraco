@@ -43,8 +43,10 @@ namespace TagDraco.Core
 
         public bool UpdateAlbum(Dictionary<int,string> filePaths, string albumName, string performers, string artist, Image Cover, uint year, string genre)
         {
-            try { 
-                foreach(string path in filePaths.Values)
+            int index = 0;
+            try {
+                
+                foreach (string path in filePaths.Values)
                 {
                     TagLib.File file = TagLib.File.Create(path);
                     file.Tag.Album = albumName;
@@ -53,11 +55,12 @@ namespace TagDraco.Core
                     file.Tag.Genres = genre.Split(',');
                     file.Tag.Year = year;
                     SaveMetadataToFile(file, Cover);
+                    index++;
                 }
                 return true;
             }catch(Exception e)
             {
-                Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0} {1}", e.Message, e.StackTrace);
+                Console.WriteLine("[Writer] - An error occured while trying to save the tags on {2}\n: {0} {1}", e.Message, e.StackTrace, filePaths[index]);
                 MessageBox.Show("An error occured : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -75,12 +78,12 @@ namespace TagDraco.Core
                 }
                 file.Save();
                 Console.WriteLine("[Writer] - Succesfully saved tags for file {0}",file.Name);
-                MessageBox.Show("Tags successfuly updated.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+               
                 return file;
             }
             catch(Exception e)
             {
-                Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0} {1}",e.Message, e.StackTrace);
+                Console.WriteLine("[Writer] - An error occured while trying to save the tags on {2}\n: {0} {1}",e.Message, e.StackTrace, file.Name);
                 MessageBox.Show("An error occured : "+e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }

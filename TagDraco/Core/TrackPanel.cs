@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using TagDraco.GUI;
+using TagLib;
 
 namespace TagDraco.Core
 {
@@ -14,16 +18,28 @@ namespace TagDraco.Core
         readonly Padding PADDING = new Padding(10);
 
         readonly Point IMG_LOCATION = new Point(4, 4); 
-        readonly Point LBL_LOCATION = new Point(32, 4);
+        readonly Point IDX_LBL_LOCATION = new Point(32, 10);
+        //readonly Point LBL_LOCATION = new Point(32, 4);
 
         readonly AnchorStyles ANCHOR_MASK = (AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top);
-
         readonly ThemeManager theme;
 
         public Label Label { get; set; }
-        public TrackPanel(string filename, Image cover, string title, ThemeManager theme)
+        public Label IndexLabel { get; set; }
+
+        public ContextMenu ctxMenu { get; } = new ContextMenu();
+        
+
+        static PictureUtils utils = new PictureUtils();
+
+        Tag tags;
+        string path;
+
+        public TrackPanel(ThemeManager theme, TagLib.Tag tags, int index, string path)
         {
+            this.tags = tags;
             this.theme = theme;
+            this.path = path;
 
             Anchor = ANCHOR_MASK;
             BackColor = theme.ActiveTheme.Equals(ThemeManager.Theme.Dark)?ThemeManager.Blay:ThemeManager.Blite;
@@ -31,17 +47,43 @@ namespace TagDraco.Core
             MaximumSize = MAX_SIZE;
             Padding = PADDING;
 
+            Dictionary<uint, Image> hashCodes = new Dictionary<uint, Image>();
+
+            IPicture iPicture = null;
+            Image cover = null;
+            if (tags.Pictures.Length != 0)
+            {
+                iPicture = tags.Pictures[0];
+                uint hash = iPicture.Data.Checksum;
+                if (!hashCodes.ContainsKey(hash))
+                    hashCodes.Add(hash, utils.IPictureToImage(iPicture, 24));
+                cover = hashCodes[hash];
+            }
+
             PictureBox coverBox = new PictureBox();
             coverBox.Size = IMG_SIZE;
             coverBox.Image = cover;
             coverBox.Location = IMG_LOCATION;
 
+            if(tags.Track != 0)
+            {
+                index = (int)tags.Track;
+            }
+
+            IndexLabel = new Label
+            {
+                Text = index.ToString("###"),
+                AutoSize = true,
+                Location = IDX_LBL_LOCATION,
+                ForeColor = Color.Gray
+            };
+
             Label = new Label
             {
-                Text = filename + "  ---  " + title,
+                Text = tags.Title==null?"No Title" : tags.Title,
                 AutoSize = true,
-                Location = LBL_LOCATION,
-                ForeColor = theme.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? Color.White : Color.Black
+                Location = new Point(40, 10),
+                ForeColor = tags.Title == null ? Color.Gray : theme.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? Color.White : Color.Black
             };
 
             MouseEventHandler clickHandler = new MouseEventHandler(OnClick);
@@ -53,12 +95,52 @@ namespace TagDraco.Core
             Label.MouseClick += clickHandler;
 
             Controls.Add(coverBox);
+            Controls.Add(IndexLabel);
             Controls.Add(Label);
             MouseEnter += hoverHandler;
             MouseLeave += exitHandler;
             MouseClick += clickHandler;
 
+            MenuItem itemPlayInMP = new MenuItem()
+            {
+                Text="Open in music player",
+                
+            };
+            itemPlayInMP.Click += new EventHandler(OnPlayClicked);
+
+            MenuItem itemShowPath = new MenuItem()
+            {
+                Text = "Show in explorer",
+
+            };
+            itemShowPath.Click += new EventHandler(OnPathClicked);
+
+            ctxMenu.MenuItems.Add(itemPlayInMP);
+            ctxMenu.MenuItems.Add(itemShowPath);
+
             //Paint += new PaintEventHandler(RePaint);
+        }
+
+        private void OnPlayClicked(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = path,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
+        }
+
+        private void OnPathClicked(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = "/select,"+path,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
         }
 
         private void RePaint(object sender, PaintEventArgs e)
@@ -94,15 +176,29 @@ namespace TagDraco.Core
 
         void OnClick(object sender, MouseEventArgs e)
         {
-            if (theme.ActiveTheme.Equals(ThemeManager.Theme.Dark))
-            {
-                BackColor = ThemeManager.LighterBlay;
+            if (e.Button.Equals(MouseButtons.Left)){
+                if (theme.ActiveTheme.Equals(ThemeManager.Theme.Dark))
+                {
+                    BackColor = ThemeManager.LighterBlay;
+                }
+                else
+                {
+                    BackColor = ThemeManager.DarkerBlite;
+                }
             }
-            else
+            else if(e.Button.Equals(MouseButtons.Right))
             {
-                BackColor = ThemeManager.DarkerBlite;
+                ctxMenu.Show(this, e.Location);
             }
+            
         }
 
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            this.ResumeLayout(false);
+            
+
+        }
     }
 }

@@ -114,6 +114,9 @@
     <Compile Include="Core\Reader.cs" />
     <Compile Include="Core\PictureUtils.cs" />
     <Compile Include="Core\Writer.cs" />
+    <EmbeddedResource Include="Core\TrackPanel.resx">
+      <DependentUpon>TrackPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainWin.resx">
       <DependentUpon>MainWin.cs</DependentUpon>
     </EmbeddedResource>

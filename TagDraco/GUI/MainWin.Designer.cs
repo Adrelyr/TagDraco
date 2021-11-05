@@ -103,7 +103,7 @@ namespace TagDraco.GUI
             // 
             this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -111,7 +111,7 @@ namespace TagDraco.GUI
             // 
             this.clearToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearToolStripMenuItem.Image")));
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
@@ -145,23 +145,24 @@ namespace TagDraco.GUI
             this.themeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.darkThemeMenuItem,
             this.lightThemeMenuItem});
+            this.themeToolStripMenuItem.Enabled = false;
             this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
-            this.themeToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.themeToolStripMenuItem.Text = "Theme";
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.themeToolStripMenuItem.Text = "Theme (To be Redone)";
             // 
             // darkThemeMenuItem
             // 
             this.darkThemeMenuItem.Checked = true;
             this.darkThemeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.darkThemeMenuItem.Name = "darkThemeMenuItem";
-            this.darkThemeMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.darkThemeMenuItem.Size = new System.Drawing.Size(180, 22);
             this.darkThemeMenuItem.Text = "Dark";
             this.darkThemeMenuItem.Click += new System.EventHandler(this.DarkThemeOptionClicked);
             // 
             // lightThemeMenuItem
             // 
             this.lightThemeMenuItem.Name = "lightThemeMenuItem";
-            this.lightThemeMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.lightThemeMenuItem.Size = new System.Drawing.Size(180, 22);
             this.lightThemeMenuItem.Text = "Light";
             this.lightThemeMenuItem.Click += new System.EventHandler(this.LightThemeOptionClicked);
             // 
@@ -203,7 +204,7 @@ namespace TagDraco.GUI
             // 
             this.status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.status.AutoSize = true;
-            this.status.Location = new System.Drawing.Point(8, 628);
+            this.status.Location = new System.Drawing.Point(6, 612);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(46, 13);
             this.status.TabIndex = 17;
@@ -213,7 +214,7 @@ namespace TagDraco.GUI
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(11, 644);
+            this.progressBar1.Location = new System.Drawing.Point(11, 628);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(254, 19);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -226,11 +227,11 @@ namespace TagDraco.GUI
             this.updateAlbum.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.updateAlbum.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.updateAlbum.ForeColor = System.Drawing.Color.White;
-            this.updateAlbum.Location = new System.Drawing.Point(135, 669);
+            this.updateAlbum.Location = new System.Drawing.Point(135, 653);
             this.updateAlbum.Name = "updateAlbum";
-            this.updateAlbum.Size = new System.Drawing.Size(130, 32);
+            this.updateAlbum.Size = new System.Drawing.Size(130, 48);
             this.updateAlbum.TabIndex = 15;
-            this.updateAlbum.Text = "Update Album";
+            this.updateAlbum.Text = "Update Album (Ctrl-Shift-S)";
             this.updateAlbum.UseVisualStyleBackColor = false;
             this.updateAlbum.Click += new System.EventHandler(this.updateAlbum_Click);
             // 
@@ -354,11 +355,11 @@ namespace TagDraco.GUI
             this.changeTagsBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.changeTagsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.changeTagsBtn.ForeColor = System.Drawing.Color.White;
-            this.changeTagsBtn.Location = new System.Drawing.Point(10, 669);
+            this.changeTagsBtn.Location = new System.Drawing.Point(10, 653);
             this.changeTagsBtn.Name = "changeTagsBtn";
-            this.changeTagsBtn.Size = new System.Drawing.Size(119, 32);
+            this.changeTagsBtn.Size = new System.Drawing.Size(119, 48);
             this.changeTagsBtn.TabIndex = 8;
-            this.changeTagsBtn.Text = "Update File";
+            this.changeTagsBtn.Text = "Update File\r\n(Ctrl-S)";
             this.changeTagsBtn.UseVisualStyleBackColor = true;
             this.changeTagsBtn.Click += new System.EventHandler(this.saveMetadataBtnPressed);
             // 
@@ -446,12 +447,14 @@ namespace TagDraco.GUI
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(840, 800);
             this.Name = "MainGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TagDraco";
             this.Load += new System.EventHandler(this.TagDraco_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainGUI_KeyDown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox1.ResumeLayout(false);

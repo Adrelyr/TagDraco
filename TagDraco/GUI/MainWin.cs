@@ -90,8 +90,11 @@ namespace TagDraco.GUI
             uint track = uint.Parse(trackBox.Text);
             string genres = genreBox.Text;
             
-            writer.UpdateFile(tagReader.sortedFilePaths[selectedIndex], pictureBox1.Image, title, performers, albumArtists
-                ,album, year, track, genres);
+            if(writer.UpdateFile(tagReader.sortedFilePaths[selectedIndex], pictureBox1.Image, title, performers, albumArtists
+                ,album, year, track, genres))
+            {
+                MessageBox.Show("Tags successfuly updated.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             
             ClearTrackPanels();
             LoadMetaData(selectedIndex);
@@ -103,7 +106,7 @@ namespace TagDraco.GUI
             if (imageBrowser.FileName==("")) return;
 
             Image image = Image.FromFile(imageBrowser.FileName);
-            pictureBox1.Image = utils.ResizeImage(image, new Size(256, 256));
+            pictureBox1.Image = utils.ResizeImage(image, new Size(512, 512));
             image.Dispose();
             Properties.Settings.Default.lastImagePath = Path.GetDirectoryName(imageBrowser.FileName);
             imageBrowser.InitialDirectory = Properties.Settings.Default.lastImagePath;
@@ -119,21 +122,13 @@ namespace TagDraco.GUI
             Thread.Sleep(10);
             InitStatus(totalValues);
 
-            Dictionary<uint, Image> hashCodes = new Dictionary<uint, Image>();
+            
 
+            int listIndex=1;
             foreach (string path in tagReader.sortedFilePaths.Values)
             {
-                IPicture iPicture = null;
-                Image finalCover = null;
-                if (tagReader.GetTagsFromPath(path).Pictures.Length != 0)
-                {
-                    iPicture = tagReader.GetTagsFromPath(path).Pictures[0];
-                    uint hash = iPicture.Data.Checksum;
-                    if (!hashCodes.ContainsKey(hash))
-                        hashCodes.Add(hash, utils.IPictureToImage(iPicture, 24));
-                    finalCover = hashCodes[hash];
-                }
-                TrackPanel trackPanel = new TrackPanel(path, finalCover, tagReader.GetTagsFromPath(path).Title, themeManager)
+
+                TrackPanel trackPanel = new TrackPanel(themeManager,tagReader.GetTagsFromPath(path), listIndex, path)
                 {
                     Location = new Point(10, panelYPos),
                     Size = new Size(mainPanel.ClientSize.Width - 20, 32)
@@ -145,6 +140,8 @@ namespace TagDraco.GUI
                 panelYPos += TRACKPANEL_Y_OFFSET;
 
                 UpdateStatus("Displaying Files", (panelYPos / 42), totalValues);
+                trackPanel.Label.Location = new Point(trackPanel.IndexLabel.Size.Width + 32 + 4,10);
+                listIndex++;
             }
             loadMetadataIntoDetailsBox(tagReader.GetTagsFromPath(tagReader.sortedFilePaths[index]));
             status.Text = "Done.";
@@ -152,18 +149,32 @@ namespace TagDraco.GUI
 
         void onTrackPanelClick(object sender, MouseEventArgs e)
         {
-            GC.Collect();
             Control panel = (Control)sender;
-            Clear(false);
-            if (sender is Label)
+            if (e.Button.Equals(MouseButtons.Left))
             {
-                selectedIndex = (short)mainPanel.Controls.IndexOf(panel.Parent);
+                GC.Collect();
+                
+                Clear(false);
+                if (sender is Label)
+                {
+                    selectedIndex = (short)mainPanel.Controls.IndexOf(panel.Parent);
+                }
+                else
+                {
+                    selectedIndex = (short)mainPanel.Controls.IndexOf(panel);
+                }
+                loadMetadataIntoDetailsBox(tagReader.GetTagsFromPath(tagReader.sortedFilePaths[selectedIndex]));
             }
-            else
+            else if(e.Button.Equals(MouseButtons.Right))
             {
-                selectedIndex = (short)mainPanel.Controls.IndexOf(panel);
+                if (panel.Parent is TrackPanel)
+                {
+                    TrackPanel trackPanel = (TrackPanel)panel.Parent;
+                    trackPanel.ctxMenu.Show(panel, e.Location);
+                }
+                
             }
-            loadMetadataIntoDetailsBox(tagReader.GetTagsFromPath(tagReader.sortedFilePaths[selectedIndex]));
+            
         }
 
         private void loadMetadataIntoDetailsBox(Tag tag)
@@ -261,7 +272,10 @@ namespace TagDraco.GUI
 
             Writer tagWriter = new Writer();
 
-            tagWriter.UpdateAlbum(tagReader.sortedFilePaths, album, performers, albumArtists, cover, year, genres);
+            if(tagWriter.UpdateAlbum(tagReader.sortedFilePaths, album, performers, albumArtists, cover, year, genres))
+            {
+                MessageBox.Show("Tags successfuly updated.", "Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
             ClearTrackPanels();
             LoadMetaData(selectedIndex);
@@ -289,6 +303,7 @@ namespace TagDraco.GUI
         {
             RePaintGroupBox(groupBox1, e.Graphics, themeManager.ActiveTheme.Equals(ThemeManager.Theme.Dark) ? Color.White : Color.Black);
         }
+
 
         void RePaintGroupBox(GroupBox box, Graphics g, Color color)
         {
@@ -318,6 +333,18 @@ namespace TagDraco.GUI
             g.DrawLine(borderPen, new Point(rect.X, rect.Y), new Point(rect.X + box.Padding.Left, rect.Y));
             //Top2
             g.DrawLine(borderPen, new Point(rect.X + box.Padding.Left + (int)(strSize.Width), rect.Y), new Point(rect.X + rect.Width, rect.Y));
+        }
+
+        private void MainGUI_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                saveMetadataBtnPressed(null, null);
+            }
+            else if (e.Control && e.Shift && e.KeyCode == Keys.S)
+            {
+                updateAlbum_Click(null, null);
+            }
         }
     }
 }
