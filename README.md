@@ -6,9 +6,7 @@ Although Windows can do such a thing, it does not allow you to change the Album 
 Using TagLib-Sharp from https://github.com/mono/taglib-sharp
 
 Roadmap :
-
- - Better memory management (I still need to learn how to manage it correctly)
- - Improvements on the multiple file display
+ https://trello.com/b/QaeUUWeJ/tagdraco
 
 *The look is subject to change, but here's how it looks like currently*
 ![The look is subject to change, but here's how it looks like currently
