@@ -12,7 +12,7 @@ Roadmap :
 
 *The look is subject to change, but here's how it looks like currently*
 ![The look is subject to change, but here's how it looks like currently
-](https://github.com/Adrelyr/Tag-Draco/blob/master/image.png)
+](https://github.com/Adrelyr/Tag-Draco/blob/master/image_prev.png)
 
 Feedback is welcome !
 
