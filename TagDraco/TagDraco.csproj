@@ -26,8 +26,8 @@
     <TargetCulture>en</TargetCulture>
     <ProductName>TagDraco</ProductName>
     <PublisherName>Code Wyvern</PublisherName>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>1.3.0.%2a</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.3.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -99,6 +99,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Sorting.cs" />
+    <Compile Include="Core\Tags.cs" />
     <Compile Include="Core\TrackPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -109,7 +111,7 @@
       <DependentUpon>MainWin.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\Program.cs" />
-    <Compile Include="GUI\ThemeManager.cs" />
+    <Compile Include="GUI\TagDracoColors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Reader.cs" />
     <Compile Include="Core\PictureUtils.cs" />
@@ -119,6 +121,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainWin.resx">
       <DependentUpon>MainWin.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -151,6 +154,7 @@
     <None Include="Resources\Help %28Custom%29.png" />
     <None Include="Resources\clear %28Custom%29.png" />
     <None Include="Resources\about %28Custom%29.png" />
+    <None Include="Resources\loading2.gif" />
     <Content Include="tagdraco2.ico" />
     <None Include="Resources\TagDraco_Help 16.png" />
     <None Include="Resources\TagDraco_File 16.png" />

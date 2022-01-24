@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace TagDraco.GUI
 {
@@ -31,10 +32,11 @@ namespace TagDraco.GUI
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainGUI));
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,7 +46,7 @@ namespace TagDraco.GUI
             this.lightThemeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.status = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.updateAlbum = new System.Windows.Forms.Button();
             this.trackBox = new System.Windows.Forms.TextBox();
             this.genreBox = new System.Windows.Forms.TextBox();
@@ -53,7 +55,7 @@ namespace TagDraco.GUI
             this.contArtistsBox = new System.Windows.Forms.TextBox();
             this.artistBox = new System.Windows.Forms.TextBox();
             this.albumBox = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.coverBox = new System.Windows.Forms.PictureBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.changePicBtn = new System.Windows.Forms.Button();
@@ -65,17 +67,20 @@ namespace TagDraco.GUI
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.imageBrowser = new System.Windows.Forms.OpenFileDialog();
-            this.mainPanel = new System.Windows.Forms.Panel();
+            this.sortComboBox = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.mainPanel = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coverBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // openFileDialog1
+            // openFileDialog
             // 
-            this.openFileDialog1.AddExtension = false;
-            this.openFileDialog1.Filter = "MP3 files (*.mp3)|*.mp3|Wav files (*.wav)|*.wav";
-            this.openFileDialog1.Multiselect = true;
+            this.openFileDialog.AddExtension = false;
+            this.openFileDialog.Filter = "MP3 files (*.mp3)|*.mp3|Wav files (*.wav)|*.wav";
+            this.openFileDialog.Multiselect = true;
             // 
             // menuStrip
             // 
@@ -93,6 +98,7 @@ namespace TagDraco.GUI
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
+            this.openFolderToolStripMenuItem,
             this.clearToolStripMenuItem});
             this.fileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("fileToolStripMenuItem.Image")));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -103,17 +109,25 @@ namespace TagDraco.GUI
             // 
             this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.openToolStripMenuItem.Text = "Open File(s)";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenFileClicked);
+            // 
+            // openFolderToolStripMenuItem
+            // 
+            this.openFolderToolStripMenuItem.Image = global::TagDraco.Properties.Resources.TagDraco_Open;
+            this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.openFolderToolStripMenuItem.Text = "Open Folder";
+            this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderClicked);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("clearToolStripMenuItem.Image")));
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.clearToolStripMenuItem.Text = "Clear";
-            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearMenuClicked);
             // 
             // helpToolStripMenuItem
             // 
@@ -130,7 +144,6 @@ namespace TagDraco.GUI
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "About...";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -155,23 +168,21 @@ namespace TagDraco.GUI
             this.darkThemeMenuItem.Checked = true;
             this.darkThemeMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.darkThemeMenuItem.Name = "darkThemeMenuItem";
-            this.darkThemeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.darkThemeMenuItem.Size = new System.Drawing.Size(101, 22);
             this.darkThemeMenuItem.Text = "Dark";
-            this.darkThemeMenuItem.Click += new System.EventHandler(this.DarkThemeOptionClicked);
             // 
             // lightThemeMenuItem
             // 
             this.lightThemeMenuItem.Name = "lightThemeMenuItem";
-            this.lightThemeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.lightThemeMenuItem.Size = new System.Drawing.Size(101, 22);
             this.lightThemeMenuItem.Text = "Light";
-            this.lightThemeMenuItem.Click += new System.EventHandler(this.LightThemeOptionClicked);
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox1.Controls.Add(this.status);
-            this.groupBox1.Controls.Add(this.progressBar1);
+            this.groupBox1.Controls.Add(this.progressBar);
             this.groupBox1.Controls.Add(this.updateAlbum);
             this.groupBox1.Controls.Add(this.trackBox);
             this.groupBox1.Controls.Add(this.genreBox);
@@ -180,7 +191,7 @@ namespace TagDraco.GUI
             this.groupBox1.Controls.Add(this.contArtistsBox);
             this.groupBox1.Controls.Add(this.artistBox);
             this.groupBox1.Controls.Add(this.albumBox);
-            this.groupBox1.Controls.Add(this.pictureBox1);
+            this.groupBox1.Controls.Add(this.coverBox);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.changePicBtn);
@@ -198,7 +209,6 @@ namespace TagDraco.GUI
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Details";
-            this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBox1_Paint);
             // 
             // status
             // 
@@ -210,15 +220,15 @@ namespace TagDraco.GUI
             this.status.TabIndex = 17;
             this.status.Text = "Waiting.";
             // 
-            // progressBar1
+            // progressBar
             // 
-            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(11, 628);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(254, 19);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBar1.TabIndex = 16;
+            this.progressBar.Location = new System.Drawing.Point(11, 628);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(254, 19);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.TabIndex = 16;
             // 
             // updateAlbum
             // 
@@ -233,7 +243,6 @@ namespace TagDraco.GUI
             this.updateAlbum.TabIndex = 15;
             this.updateAlbum.Text = "Update Album (Ctrl-Shift-S)";
             this.updateAlbum.UseVisualStyleBackColor = false;
-            this.updateAlbum.Click += new System.EventHandler(this.updateAlbum_Click);
             // 
             // trackBox
             // 
@@ -305,15 +314,16 @@ namespace TagDraco.GUI
             this.albumBox.Size = new System.Drawing.Size(256, 20);
             this.albumBox.TabIndex = 0;
             // 
-            // pictureBox1
+            // coverBox
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
-            this.pictureBox1.Location = new System.Drawing.Point(10, 324);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(256, 256);
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.WaitOnLoad = true;
+            this.coverBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
+            this.coverBox.Location = new System.Drawing.Point(10, 324);
+            this.coverBox.Name = "coverBox";
+            this.coverBox.Size = new System.Drawing.Size(256, 256);
+            this.coverBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.coverBox.TabIndex = 2;
+            this.coverBox.TabStop = false;
+            this.coverBox.WaitOnLoad = true;
             // 
             // label8
             // 
@@ -344,9 +354,9 @@ namespace TagDraco.GUI
             this.changePicBtn.Name = "changePicBtn";
             this.changePicBtn.Size = new System.Drawing.Size(256, 23);
             this.changePicBtn.TabIndex = 7;
-            this.changePicBtn.Text = "Change picture";
+            this.changePicBtn.Text = "Change Album cover";
             this.changePicBtn.UseVisualStyleBackColor = false;
-            this.changePicBtn.Click += new System.EventHandler(this.changePicBtnPressed);
+            this.changePicBtn.Click += new System.EventHandler(this.ChangeCoverClicked);
             // 
             // changeTagsBtn
             // 
@@ -361,7 +371,6 @@ namespace TagDraco.GUI
             this.changeTagsBtn.TabIndex = 8;
             this.changeTagsBtn.Text = "Update File\r\n(Ctrl-S)";
             this.changeTagsBtn.UseVisualStyleBackColor = true;
-            this.changeTagsBtn.Click += new System.EventHandler(this.saveMetadataBtnPressed);
             // 
             // label6
             // 
@@ -422,20 +431,57 @@ namespace TagDraco.GUI
             this.imageBrowser.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*.jpg; *.jpeg; *.jpe; *.jfif; *" +
     ".png";
             // 
+            // sortComboBox
+            // 
+            this.sortComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
+            this.sortComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sortComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sortComboBox.ForeColor = System.Drawing.Color.White;
+            this.sortComboBox.FormattingEnabled = true;
+            this.sortComboBox.Items.AddRange(new object[] {
+            "Track Number Ascending",
+            "Track Number Descending",
+            "File Alphabetical (A->Z)",
+            "Title Alphabetical (A->Z)",
+            "File Alphabetical (Z->A)",
+            "Title Alphabetical (Z->A)"});
+            this.sortComboBox.Location = new System.Drawing.Point(341, 47);
+            this.sortComboBox.Name = "sortComboBox";
+            this.sortComboBox.Size = new System.Drawing.Size(471, 21);
+            this.sortComboBox.TabIndex = 6;
+            this.sortComboBox.SelectionChangeCommitted += new System.EventHandler(this.SortTypeChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(294, 50);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(41, 13);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "Sort By";
+            // 
+            // folderBrowserDialog
+            // 
+            this.folderBrowserDialog.RootFolder = System.Environment.SpecialFolder.MyMusic;
+            this.folderBrowserDialog.ShowNewFolderButton = false;
+            // 
             // mainPanel
             // 
             this.mainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mainPanel.AutoScroll = true;
-            this.mainPanel.AutoScrollMargin = new System.Drawing.Size(10, 0);
-            this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
-            this.mainPanel.Location = new System.Drawing.Point(294, 33);
+            this.mainPanel.ColumnCount = 1;
+            this.mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.mainPanel.Location = new System.Drawing.Point(297, 74);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Padding = new System.Windows.Forms.Padding(10, 10, 20, 10);
-            this.mainPanel.Size = new System.Drawing.Size(518, 718);
-            this.mainPanel.TabIndex = 5;
+            this.mainPanel.RowCount = 2;
+            this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5.317577F));
+            this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 94.68242F));
+            this.mainPanel.Size = new System.Drawing.Size(515, 677);
+            this.mainPanel.TabIndex = 8;
             // 
             // MainGUI
             // 
@@ -444,6 +490,8 @@ namespace TagDraco.GUI
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(49)))), ((int)(((byte)(60)))));
             this.ClientSize = new System.Drawing.Size(824, 761);
             this.Controls.Add(this.mainPanel);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.sortComboBox);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -453,13 +501,11 @@ namespace TagDraco.GUI
             this.Name = "MainGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TagDraco";
-            this.Load += new System.EventHandler(this.TagDraco_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainGUI_KeyDown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.coverBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -467,7 +513,7 @@ namespace TagDraco.GUI
 
         #endregion
 
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
@@ -482,7 +528,7 @@ namespace TagDraco.GUI
         private System.Windows.Forms.TextBox artistBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox albumBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox coverBox;
         private System.Windows.Forms.Button changePicBtn;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox trackBox;
@@ -493,15 +539,19 @@ namespace TagDraco.GUI
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox contArtistsBox;
-        private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button updateAlbum;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label status;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem themeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem darkThemeMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lightThemeMenuItem;
+        private System.Windows.Forms.ComboBox sortComboBox;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ToolStripMenuItem openFolderToolStripMenuItem;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.TableLayoutPanel mainPanel;
     }
 }
 

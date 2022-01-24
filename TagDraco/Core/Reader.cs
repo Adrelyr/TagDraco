@@ -2,59 +2,67 @@
 using TagLib;
 using TagDraco.GUI;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading;
+using System.Diagnostics;
 
 namespace TagDraco.Core
 {
     class Reader
     {
-        private MainGUI mainWin;
-        public Dictionary<int, string> sortedFilePaths { get; }
-        private List<File> files;
+        public List<Tags> tags { get; private set; } = new List<Tags>();
+        private PictureUtils pictureUtils = new PictureUtils();
 
-        public Reader(MainGUI mainGUI)
+        public Reader()
         {
-            mainWin = mainGUI;
-            sortedFilePaths = new Dictionary<int, string>();
+            
         }
 
         public void CreateTagLibFiles(List<string> filePaths){
-           files = filePaths.ConvertAll(filePath => TagLib.File.Create(filePath));
+            foreach (string path in filePaths)
+            {
+                File file = File.Create(path);
+                tags.Add(new Tags(file.Tag.Album, file.Tag.Title, file.Tag.AlbumArtists, file.Tag.Performers, file.Tag.Year, file.Tag.Track, file.Tag.Genres, pictureUtils.IPictureToImage(file.Tag.Pictures[0], 512), path));
+                file.Dispose();
+            }
+            filePaths.Clear();
         }
 
-        public void SortByTrackNumber()
+        public void SortByTrackNumberAsc()
         {
-            mainWin.InitStatus(files.Count);
-            files.Sort(delegate (TagLib.File x, TagLib.File y)
+            tags.Sort(delegate (Tags x, Tags y)
             {
-                if (x.Tag.Track < y.Tag.Track)
+                if (x.Track < y.Track)
                     return -1;
-                else if (x.Tag.Track == y.Tag.Track)
+                else if (x.Track == y.Track)
                     return 0;
                 else
                     return 1;
             });
-
-            int index = 0;
-            foreach (TagLib.File file in files)
-            {
-                sortedFilePaths.Add(index, file.Name);
-                mainWin.UpdateStatus("Loading Files", index, files.Count);
-                index++;
-            }
-            files.Clear();
         }
 
-        public TagLib.Tag GetTagsFromPath(string path)
+        public void SortByTrackNumberDesc()
         {
-            return File.Create(path).Tag;
+            tags.Sort(delegate (Tags x, Tags y)
+            {
+                if (x.Track < y.Track)
+                    return 1;
+                else if (x.Track == y.Track)
+                    return 0;
+                else
+                    return -1;
+            });
+        }
+
+        public File GetTagFileFromPath(string path)
+        {
+            return File.Create(path);
         }
 
         public void ClearFiles()
         {
-            sortedFilePaths.Clear();
+            tags.Clear(); 
         }
-
-        public bool IsEmpty => sortedFilePaths.Count == 0;
 
         ~Reader(){}
     }
