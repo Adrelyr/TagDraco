@@ -29,6 +29,9 @@ namespace TagDraco.GUI
         void Clear(bool clearLists)
         {
             mainPanel.Controls.Clear();
+            mainPanel.RowStyles.Clear();
+            mainPanel.VerticalScroll.Value = 0;
+
             titleBox.Text       = string.Empty;
             artistBox.Text      = string.Empty;
             contArtistsBox.Text = string.Empty;
@@ -37,7 +40,11 @@ namespace TagDraco.GUI
             trackBox.Text       = string.Empty;
             genreBox.Text       = string.Empty;
             if (coverBox.Image != null)
+            {
                 coverBox.Image.Dispose();
+                coverBox.Image = null;
+            }
+                
             if(clearLists)
                 reader.ClearFiles();
             progressBar.Value  = 0;
@@ -74,14 +81,18 @@ namespace TagDraco.GUI
 
         void PopulateDetailBox()
         {
-            albumBox.Text       = selectedTrackPanel.tags.Album;
-            artistBox.Text      = selectedTrackPanel.tags.GetJoinedArtists();
-            contArtistsBox.Text = selectedTrackPanel.tags.GetJoinedContributingArtists();
-            titleBox.Text       = selectedTrackPanel.tags.Title == null ? "" : selectedTrackPanel.tags.Title;
-            yearBox.Text        = selectedTrackPanel.tags.Year.ToString();
-            genreBox.Text       = selectedTrackPanel.tags.GetJoinedGenres();
-            trackBox.Text       = selectedTrackPanel.tags.Track.ToString();
-            coverBox.Image      = selectedTrackPanel.tags.AlbumCover;
+            albumBox.Text       = selectedTrackPanel.Tags.Album;
+            artistBox.Text      = selectedTrackPanel.Tags.GetJoinedArtists();
+            contArtistsBox.Text = selectedTrackPanel.Tags.GetJoinedContributingArtists();
+            titleBox.Text       = selectedTrackPanel.Tags.Title == null ? "" : selectedTrackPanel.Tags.Title;
+            yearBox.Text        = selectedTrackPanel.Tags.Year.ToString();
+            genreBox.Text       = selectedTrackPanel.Tags.GetJoinedGenres();
+            trackBox.Text       = selectedTrackPanel.Tags.Track.ToString();
+
+            TagLib.File f = TagLib.File.Create(selectedTrackPanel.Tags.FilePath);
+
+            coverBox.Image = utils.IPictureToImage(f.Tag.Pictures[0], 256);
+            f.Dispose();
         }
 
         void SortFiles()
@@ -99,46 +110,39 @@ namespace TagDraco.GUI
         }
 
         #region EVENTS
-        private void OpenFileClicked(object sender, System.EventArgs e)
+        private void OpenFileClicked(object sender, EventArgs e)
         {
-            Clear(true);
-            openFileDialog.ShowDialog(this);
-            int fileCount = openFileDialog.FileNames.Count();
-            if (fileCount == 0)
+            if(openFileDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                Clear(true);
+                reader.CreateTagLibFiles(openFileDialog.FileNames.ToList());
+                SortFiles();
+                openFileDialog.Dispose();
+            }
+            else
             {
                 return;
             }
-            if(fileCount >= 1000)
-            {
-                MessageBox.Show(null, "You cannot load more than 99 files!\n(Until I find a way to not make this thing eat so much ram)", "Too much files!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            reader.CreateTagLibFiles(openFileDialog.FileNames.ToList());
-            SortFiles();
-            openFileDialog.Dispose();
         }
 
         private void OpenFolderClicked(object sender, EventArgs e)
         {
-            Clear(true);
-            folderBrowserDialog.ShowDialog(this);
-            if (folderBrowserDialog.SelectedPath == string.Empty)
-                return;
-
-            string[] allfiles = Directory.GetFiles(folderBrowserDialog.SelectedPath, "*.mp3", SearchOption.AllDirectories);
-            if(allfiles.Count() >= 1000)
+            if(folderBrowserDialog.ShowDialog(this) == DialogResult.OK)
             {
-                MessageBox.Show(null, "You cannot load more than 99 files!\n(Until I find a way to not make this thing eat so much ram)", "Too much files!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if(folderBrowserDialog.SelectedPath == string.Empty)
+                    return;
+
+                string[] allfiles = Directory.GetFiles(folderBrowserDialog.SelectedPath, "*.mp3", SearchOption.AllDirectories);
+
+                Clear(true);
+                reader.CreateTagLibFiles(allfiles.ToList());
+                SortFiles();
+                folderBrowserDialog.Dispose();
+            }
+            else
+            {
                 return;
             }
-
-            reader.CreateTagLibFiles(allfiles.ToList());
-
-            
-
-            SortFiles();
-            folderBrowserDialog.Dispose();
         }
 
         private void OnTrackPanelClicked(object sender, EventArgs e)
@@ -198,8 +202,67 @@ namespace TagDraco.GUI
             Properties.Settings.Default.Save();
         }
 
+        private void UpdateTrack(object sender, EventArgs e)
+        {
+            Writer writer = new Writer();
+            if (writer.UpdateFile(selectedTrackPanel.Tags.FilePath,
+                albumCover,
+                titleBox.Text,
+                contArtistsBox.Text,
+                artistBox.Text,
+                albumBox.Text,
+                Convert.ToUInt32(yearBox.Text),
+                Convert.ToUInt32(trackBox.Text),
+                genreBox.Text))
+            MessageBox.Show("Updated Tags!", "Updated Tags", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            selectedTrackPanel.Tags.AlbumCover = utils.ResizeImage(albumCover, 24, 24);
+            selectedTrackPanel.Tags.Title = titleBox.Text;
+            selectedTrackPanel.Tags.ContributingArtists = contArtistsBox.Text.Split(',');
+            selectedTrackPanel.Tags.Artists = artistBox.Text.Split(',');
+            selectedTrackPanel.Tags.Year = Convert.ToUInt32(yearBox.Text);
+            selectedTrackPanel.Tags.Track = Convert.ToUInt32(trackBox.Text);
+            selectedTrackPanel.Tags.Genres = genreBox.Text.Split(',');
+        } 
+        
+        private void UpdateAlbum(object sender, EventArgs e)
+        {
+            Writer writer = new Writer();
+            string[] paths = new string[mainPanel.Controls.Count];
+            foreach(Control c in mainPanel.Controls)
+            {
+                TrackPanel panel = c as TrackPanel;
+                paths.Append(panel.Tags.FilePath);
+                panel.Tags.AlbumCover = utils.ResizeImage(albumCover, 24, 24);
+                panel.Tags.ContributingArtists = contArtistsBox.Text.Split(',');
+                panel.Tags.Artists = artistBox.Text.Split(',');
+                panel.Tags.Year = Convert.ToUInt32(yearBox.Text);
+                panel.Tags.Genres = genreBox.Text.Split(',');
+            }
+
+            writer.UpdateAlbum(paths,
+                albumBox.Text,
+                contArtistsBox.Text,
+                artistBox.Text,
+                albumCover,
+                Convert.ToUInt32(yearBox.Text),
+                genreBox.Text);
+        }
+
         #endregion
 
-        
+        private void MainGUI_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                UpdateTrack(null, null);
+            }
+            else if (e.Control && e.Shift && e.KeyCode == Keys.S)
+            {
+                UpdateAlbum(null, null);
+            }
+        }
+
+       
     }
 }

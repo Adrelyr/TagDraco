@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
@@ -10,25 +11,49 @@ namespace TagDraco.Core
 {
     class PictureUtils
     {
-        public Image ResizeImage(Image imgToResize, Size size)
+        public Image ResizeImage(Image imgToResize, int sizeW, int sizeH)
         {
-            int sourceWidth = imgToResize.Width;
-            int sourceHeight = imgToResize.Height;
-            float nPercentW = size.Width / (float)sourceWidth;
-            float nPercentH = size.Height / (float)sourceHeight;
+            float nPercentW = sizeW / (float)imgToResize.Width;
+            float nPercentH = sizeH / (float)imgToResize.Height;
             float nPercent;
             if (nPercentH < nPercentW)
                 nPercent = nPercentH;
             else
                 nPercent = nPercentW;
-            int destWidth = (int)(sourceWidth * nPercent);
-            int destHeight = (int)(sourceHeight * nPercent);
+            int destWidth = (int)(imgToResize.Width * nPercent);
+            int destHeight = (int)(imgToResize.Height * nPercent);
             Bitmap b = new Bitmap(destWidth, destHeight);
             Graphics g = Graphics.FromImage(b);
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
             g.Dispose();
+            imgToResize.Dispose();
             return b;
+        }
+
+        public Bitmap ResizeImage2(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
 
         public Image IPictureToImage(IPicture p, int size)
@@ -37,7 +62,7 @@ namespace TagDraco.Core
             {
                 MemoryStream ms = new MemoryStream(p.Data.Data);
                 
-                Image img = ResizeImage(Image.FromStream(ms), new Size(size, size));
+                Image img = ResizeImage(Image.FromStream(ms), size, size);
                 ms.Dispose();
                 return img;
             }

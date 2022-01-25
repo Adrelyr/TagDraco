@@ -84,12 +84,14 @@ namespace TagDraco.GUI
             // 
             // menuStrip
             // 
+            this.menuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(24)))));
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
+            this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.menuStrip.Size = new System.Drawing.Size(824, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
@@ -100,6 +102,7 @@ namespace TagDraco.GUI
             this.openToolStripMenuItem,
             this.openFolderToolStripMenuItem,
             this.clearToolStripMenuItem});
+            this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.fileToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("fileToolStripMenuItem.Image")));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
@@ -133,6 +136,7 @@ namespace TagDraco.GUI
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.helpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripMenuItem.Image")));
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
@@ -149,6 +153,7 @@ namespace TagDraco.GUI
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.themeToolStripMenuItem});
+            this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -243,6 +248,7 @@ namespace TagDraco.GUI
             this.updateAlbum.TabIndex = 15;
             this.updateAlbum.Text = "Update Album (Ctrl-Shift-S)";
             this.updateAlbum.UseVisualStyleBackColor = false;
+            this.updateAlbum.Click += new System.EventHandler(this.UpdateAlbum);
             // 
             // trackBox
             // 
@@ -371,6 +377,7 @@ namespace TagDraco.GUI
             this.changeTagsBtn.TabIndex = 8;
             this.changeTagsBtn.Text = "Update File\r\n(Ctrl-S)";
             this.changeTagsBtn.UseVisualStyleBackColor = true;
+            this.changeTagsBtn.Click += new System.EventHandler(this.UpdateTrack);
             // 
             // label6
             // 
@@ -501,6 +508,7 @@ namespace TagDraco.GUI
             this.Name = "MainGUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TagDraco";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainGUI_KeyDown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox1.ResumeLayout(false);

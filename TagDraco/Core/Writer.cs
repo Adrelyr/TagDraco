@@ -41,12 +41,12 @@ namespace TagDraco.Core
             
         }
 
-        public bool UpdateAlbum(Dictionary<int,string> filePaths, string albumName, string performers, string artist, Image Cover, uint year, string genre)
+        public bool UpdateAlbum(string[] filePaths, string albumName, string performers, string artist, Image Cover, uint year, string genre)
         {
             int index = 0;
             try {
                 
-                foreach (string path in filePaths.Values)
+                foreach (string path in filePaths)
                 {
                     TagLib.File file = TagLib.File.Create(path);
                     file.Tag.Album = albumName;
@@ -66,7 +66,7 @@ namespace TagDraco.Core
             }
         }
 
-        private TagLib.File SaveMetadataToFile(TagLib.File file, Image cover)
+        private void SaveMetadataToFile(TagLib.File file, Image cover)
         {
             try {
                 if (!cover.Equals(null)) { 
@@ -79,13 +79,11 @@ namespace TagDraco.Core
                 file.Save();
                 Console.WriteLine("[Writer] - Succesfully saved tags for file {0}",file.Name);
                
-                return file;
             }
             catch(Exception e)
             {
                 Console.WriteLine("[Writer] - An error occured while trying to save the tags on {2}\n: {0} {1}",e.Message, e.StackTrace, file.Name);
                 MessageBox.Show("An error occured : "+e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
             }
         }
     }

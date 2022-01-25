@@ -1,10 +1,5 @@
-﻿using System;
-using TagLib;
-using TagDraco.GUI;
+﻿using TagLib;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
-using System.Diagnostics;
 
 namespace TagDraco.Core
 {
@@ -22,7 +17,7 @@ namespace TagDraco.Core
             foreach (string path in filePaths)
             {
                 File file = File.Create(path);
-                tags.Add(new Tags(file.Tag.Album, file.Tag.Title, file.Tag.AlbumArtists, file.Tag.Performers, file.Tag.Year, file.Tag.Track, file.Tag.Genres, pictureUtils.IPictureToImage(file.Tag.Pictures[0], 512), path));
+                tags.Add(new Tags(file.Tag.Album, file.Tag.Title, file.Tag.AlbumArtists, file.Tag.Performers, file.Tag.Year, file.Tag.Track, file.Tag.Genres, pictureUtils.IPictureToImage(file.Tag.Pictures[0], 24), path));
                 file.Dispose();
             }
             filePaths.Clear();
@@ -61,6 +56,7 @@ namespace TagDraco.Core
 
         public void ClearFiles()
         {
+            foreach(Tags tag in tags) tag.Dispose();
             tags.Clear(); 
         }
 

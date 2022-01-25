@@ -1,8 +1,10 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace TagDraco.Core
 {
-    public class Tags
+    public class Tags : IDisposable
     {
         public string   Album               { get; set; } = string.Empty;
         public string   Title               { get; set; } = string.Empty;
@@ -21,6 +23,8 @@ namespace TagDraco.Core
 
         ~Tags()
         {
+            AlbumCover.Dispose();
+            Debug.WriteLine("Tag has been yeeted");
         }
 
         public Tags(string Album, string Title, string[] Artists, string[] ContributingArtists, uint Year, uint Track, string[] Genres, Image AlbumCover, string FilePath)
@@ -64,6 +68,11 @@ namespace TagDraco.Core
                 joined += toJoin[i] + ",";
             }
             return joined;
+        }
+
+        public void Dispose()
+        {
+            AlbumCover.Dispose();
         }
     }
 }

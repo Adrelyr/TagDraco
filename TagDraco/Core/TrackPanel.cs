@@ -27,18 +27,20 @@ namespace TagDraco.Core
 
         public int Index { get; set; }
 
-        public ContextMenu ctxMenu { get; } = new ContextMenu();
+        public ContextMenu CtxMenu { get; } = new ContextMenu();
 
         public EventHandler TrackPanelClicked;
 
-        public Tags tags { get; private set; }
+        private PictureUtils pictureUtils { get; set; } = new PictureUtils();
+
+        public Tags Tags { get; private set; }
 
         public TrackPanel(int index, Tags tags)
         {
             BackColor = TagDracoColors.Blay;
 
             Index = index;
-            this.tags = tags;
+            Tags = tags;
 
             Anchor = ANCHOR_MASK;
             MinimumSize = MIN_SIZE;
@@ -49,9 +51,9 @@ namespace TagDraco.Core
 
             PictureBox coverBox = new PictureBox();
             coverBox.Size = IMG_SIZE;
-            coverBox.Image = tags.AlbumCover;
+            Image img = pictureUtils.ResizeImage(tags.AlbumCover, IMG_SIZE.Width, IMG_SIZE.Height);
+            coverBox.Image = img;
             coverBox.Location = IMG_LOCATION;
-            coverBox.SizeMode = PictureBoxSizeMode.StretchImage;
 
             if (tags.Track != 0)
             {
@@ -121,9 +123,9 @@ namespace TagDraco.Core
             };
             itemRemoveFromList.Click += new EventHandler(OnRemoveClicked);
 
-            ctxMenu.MenuItems.Add(itemPlayInMP);
-            ctxMenu.MenuItems.Add(itemShowPath);
-            ctxMenu.MenuItems.Add(itemRemoveFromList);
+            CtxMenu.MenuItems.Add(itemPlayInMP);
+            CtxMenu.MenuItems.Add(itemShowPath);
+            CtxMenu.MenuItems.Add(itemRemoveFromList);
         }
 
         private void OnRemoveClicked(object sender, EventArgs e)
@@ -135,7 +137,7 @@ namespace TagDraco.Core
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = tags.FilePath,
+                Arguments = Tags.FilePath,
                 FileName = "explorer.exe"
             };
 
@@ -146,7 +148,7 @@ namespace TagDraco.Core
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = "/select,"+tags.FilePath,
+                Arguments = "/select,"+Tags.FilePath,
                 FileName = "explorer.exe"
             };
 
@@ -170,7 +172,7 @@ namespace TagDraco.Core
             }
             else if(e.Button.Equals(MouseButtons.Right))
             {
-                ctxMenu.Show(this, e.Location);
+                CtxMenu.Show(this, e.Location);
             }
             OnTrackPanelClicked(e);
         }
