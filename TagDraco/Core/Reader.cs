@@ -1,5 +1,8 @@
 ﻿using TagLib;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System;
+using System.Windows.Forms;
 
 namespace TagDraco.Core
 {
@@ -14,13 +17,50 @@ namespace TagDraco.Core
         }
 
         public void CreateTagLibFiles(List<string> filePaths){
+            tags.Capacity = filePaths.Count;
+            bool didSomeFilesFail = false;
+            List<string> failedFiles = null;
             foreach (string path in filePaths)
             {
-                File file = File.Create(path);
-                tags.Add(new Tags(file.Tag.Album, file.Tag.Title, file.Tag.AlbumArtists, file.Tag.Performers, file.Tag.Year, file.Tag.Track, file.Tag.Genres, pictureUtils.IPictureToImage(file.Tag.Pictures[0], 24), path));
+                File file=null;
+                try
+                {
+                    file = File.Create(path);
+                }
+                catch (Exception ex)
+                {
+                    didSomeFilesFail = true;
+                    failedFiles.Add(path);
+                    continue;
+                }
+                
+                Tags fileTags = new Tags();
+                fileTags.Title = file.Tag.Title;
+                fileTags.Year = file.Tag.Year;
+                fileTags.Album = file.Tag.Album;
+                fileTags.Genres = file.Tag.Genres;
+                fileTags.Track = file.Tag.Track;
+                fileTags.AlbumArtists = file.Tag.AlbumArtists;
+                fileTags.TrackArtists = file.Tag.Performers;
+                if (file.Tag.Pictures.Length != 0)
+                {
+                    fileTags.AlbumCover = pictureUtils.IPictureToImage(file.Tag.Pictures[0], 24);
+                }
+                fileTags.FilePath = path;
+
+                tags.Add(fileTags);
                 file.Dispose();
             }
             filePaths.Clear();
+            if (didSomeFilesFail)
+            {
+                string allFailedFiles= string.Empty;
+                foreach (string fail in failedFiles)
+                {
+                    allFailedFiles += fail + "\n";
+                }
+                MessageBox.Show("Some files failed to load :\n" + allFailedFiles);
+            }
         }
 
         public void SortByTrackNumberAsc()

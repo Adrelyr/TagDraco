@@ -8,11 +8,11 @@ namespace TagDraco.Core
     {
         public string   Album               { get; set; } = string.Empty;
         public string   Title               { get; set; } = string.Empty;
-        public string[] Artists             { get; set; } = new string[0];
-        public string[] ContributingArtists { get; set; } = new string[0];
-        public uint     Year                { get; set; } = 2000;
+        public string[] AlbumArtists        { get; set; } = new string[1];
+        public string[] TrackArtists        { get; set; } = new string[1];
+        public uint     Year                { get; set; } = 1970;
         public uint     Track               { get; set; } = 0;
-        public string[] Genres              { get; set; } = new string[0];
+        public string[] Genres              { get; set; } = new string[1];
         public Image    AlbumCover          { get; set; } = null;
         public string   FilePath            { get; set; } = string.Empty;
 
@@ -29,25 +29,31 @@ namespace TagDraco.Core
 
         public Tags(string Album, string Title, string[] Artists, string[] ContributingArtists, uint Year, uint Track, string[] Genres, Image AlbumCover, string FilePath)
         {
-            this.Album = Album;
-            this.Title = Title;
-            this.Genres = Genres;
-            this.Year = Year;
-            this.Artists = Artists;
-            this.ContributingArtists = ContributingArtists;
-            this.Track = Track;
-            this.AlbumCover = AlbumCover;
-            this.FilePath = FilePath;
+            try
+            {
+                this.Album = Album;
+                this.Title = Title;
+                this.Genres = Genres;
+                this.Year = Year;
+                this.AlbumArtists = Artists;
+                this.TrackArtists = ContributingArtists;
+                this.Track = Track;
+                this.AlbumCover = AlbumCover;
+                this.FilePath = FilePath;
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         public string GetJoinedArtists()
         {
-             return Join(Artists);
+             return Join(AlbumArtists);
         }
 
         public string GetJoinedContributingArtists()
         {
-            return Join(ContributingArtists);
+            return Join(TrackArtists);
         }
 
         public string GetJoinedGenres()
@@ -72,7 +78,7 @@ namespace TagDraco.Core
 
         public void Dispose()
         {
-            AlbumCover.Dispose();
+            if(AlbumCover!=null) AlbumCover.Dispose();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace TagDraco.GUI
             this.genreBox = new System.Windows.Forms.TextBox();
             this.yearBox = new System.Windows.Forms.TextBox();
             this.titleBox = new System.Windows.Forms.TextBox();
-            this.contArtistsBox = new System.Windows.Forms.TextBox();
+            this.trackArtistsBox = new System.Windows.Forms.TextBox();
             this.artistBox = new System.Windows.Forms.TextBox();
             this.albumBox = new System.Windows.Forms.TextBox();
             this.coverBox = new System.Windows.Forms.PictureBox();
@@ -193,7 +193,7 @@ namespace TagDraco.GUI
             this.groupBox1.Controls.Add(this.genreBox);
             this.groupBox1.Controls.Add(this.yearBox);
             this.groupBox1.Controls.Add(this.titleBox);
-            this.groupBox1.Controls.Add(this.contArtistsBox);
+            this.groupBox1.Controls.Add(this.trackArtistsBox);
             this.groupBox1.Controls.Add(this.artistBox);
             this.groupBox1.Controls.Add(this.albumBox);
             this.groupBox1.Controls.Add(this.coverBox);
@@ -290,15 +290,15 @@ namespace TagDraco.GUI
             this.titleBox.Size = new System.Drawing.Size(256, 20);
             this.titleBox.TabIndex = 3;
             // 
-            // contArtistsBox
+            // trackArtistsBox
             // 
-            this.contArtistsBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(25)))));
-            this.contArtistsBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.contArtistsBox.ForeColor = System.Drawing.Color.White;
-            this.contArtistsBox.Location = new System.Drawing.Point(10, 114);
-            this.contArtistsBox.Name = "contArtistsBox";
-            this.contArtistsBox.Size = new System.Drawing.Size(256, 20);
-            this.contArtistsBox.TabIndex = 2;
+            this.trackArtistsBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(25)))));
+            this.trackArtistsBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.trackArtistsBox.ForeColor = System.Drawing.Color.White;
+            this.trackArtistsBox.Location = new System.Drawing.Point(10, 114);
+            this.trackArtistsBox.Name = "trackArtistsBox";
+            this.trackArtistsBox.Size = new System.Drawing.Size(256, 20);
+            this.trackArtistsBox.TabIndex = 2;
             // 
             // artistBox
             // 
@@ -345,9 +345,9 @@ namespace TagDraco.GUI
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(7, 98);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(94, 13);
+            this.label7.Size = new System.Drawing.Size(66, 13);
             this.label7.TabIndex = 13;
-            this.label7.Text = "Contributing Artists";
+            this.label7.Text = "Track Artists";
             // 
             // changePicBtn
             // 
@@ -546,7 +546,7 @@ namespace TagDraco.GUI
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox contArtistsBox;
+        private System.Windows.Forms.TextBox trackArtistsBox;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button updateAlbum;
         private System.Windows.Forms.ProgressBar progressBar;

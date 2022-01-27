@@ -13,6 +13,7 @@ namespace TagDraco.Core
     {
         public Image ResizeImage(Image imgToResize, int sizeW, int sizeH)
         {
+            if (imgToResize == null) return null;
             float nPercentW = sizeW / (float)imgToResize.Width;
             float nPercentH = sizeH / (float)imgToResize.Height;
             float nPercent;
@@ -27,7 +28,7 @@ namespace TagDraco.Core
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
             g.Dispose();
-            imgToResize.Dispose();
+            //imgToResize.Dispose();
             return b;
         }
 

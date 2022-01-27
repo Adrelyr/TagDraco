@@ -31,6 +31,8 @@ namespace TagDraco.Core
 
         public EventHandler TrackPanelClicked;
 
+        public PictureBox CoverBox { get; } = new PictureBox();
+
         private PictureUtils pictureUtils { get; set; } = new PictureUtils();
 
         public Tags Tags { get; private set; }
@@ -49,11 +51,11 @@ namespace TagDraco.Core
 
             Dictionary<uint, Image> hashCodes = new Dictionary<uint, Image>();
 
-            PictureBox coverBox = new PictureBox();
-            coverBox.Size = IMG_SIZE;
+            
+            CoverBox.Size = IMG_SIZE;
             Image img = pictureUtils.ResizeImage(tags.AlbumCover, IMG_SIZE.Width, IMG_SIZE.Height);
-            coverBox.Image = img;
-            coverBox.Location = IMG_LOCATION;
+            CoverBox.Image = img;
+            CoverBox.Location = IMG_LOCATION;
 
             if (tags.Track != 0)
             {
@@ -95,7 +97,7 @@ namespace TagDraco.Core
             PathLabel.MouseLeave += exitHandler;
             PathLabel.MouseClick += clickHandler;
 
-            Controls.Add(coverBox);
+            Controls.Add(CoverBox);
             Controls.Add(IndexLabel);
             Controls.Add(Label);
             Controls.Add(PathLabel);
