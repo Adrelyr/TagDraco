@@ -4,13 +4,12 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using TagDraco.GUI;
-using TagLib;
 
 namespace TagDraco.Core
 {
     class TrackPanel : Panel
     {
-        readonly Size MAX_SIZE = new Size(2048, 46);
+        readonly Size MAX_SIZE = new Size(4096, 46);
         readonly Size MIN_SIZE = new Size(256, 46);
         readonly Size IMG_SIZE = new Size(24, 24);
 
@@ -25,7 +24,7 @@ namespace TagDraco.Core
         public Label IndexLabel { get; set; }
         public Label PathLabel { get; set; }
 
-        public int Index { get; set; }
+        public int TagIndex { get; set; }
 
         public ContextMenu CtxMenu { get; } = new ContextMenu();
 
@@ -34,15 +33,14 @@ namespace TagDraco.Core
         public PictureBox CoverBox { get; } = new PictureBox();
 
         private PictureUtils pictureUtils { get; set; } = new PictureUtils();
+        private TagManager tagManager { get; set; }
 
-        public Tags Tags { get; private set; }
-
-        public TrackPanel(int index, Tags tags)
+        public TrackPanel(int tagIndex, Tag tags, TagManager manager)
         {
             BackColor = TagDracoColors.Blay;
 
-            Index = index;
-            Tags = tags;
+            TagIndex = tagIndex;
+            tagManager = manager;
 
             Anchor = ANCHOR_MASK;
             MinimumSize = MIN_SIZE;
@@ -57,17 +55,25 @@ namespace TagDraco.Core
             CoverBox.Image = img;
             CoverBox.Location = IMG_LOCATION;
 
+            int displayedIndex = tagIndex+1;
+            Color indexColor;
+
             if (tags.Track != 0)
             {
-                index = (int)tags.Track;
+                displayedIndex = (int)tags.Track;
+                indexColor = Color.Gray;
+            }
+            else
+            {
+                indexColor = Color.LightGreen;
             }
 
             IndexLabel = new Label
             {
-                Text = index.ToString("###"),
+                Text = displayedIndex.ToString("###"),
                 AutoSize = true,
                 Location = IDX_LBL_LOCATION,
-                ForeColor = Color.Gray
+                ForeColor = indexColor
             };
 
             Label = new Label
@@ -139,7 +145,7 @@ namespace TagDraco.Core
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = Tags.FilePath,
+                Arguments = tagManager.GetTagsAtIndex(TagIndex).FilePath,
                 FileName = "explorer.exe"
             };
 
@@ -150,7 +156,7 @@ namespace TagDraco.Core
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = "/select,"+Tags.FilePath,
+                Arguments = "/select,"+ tagManager.GetTagsAtIndex(TagIndex).FilePath,
                 FileName = "explorer.exe"
             };
 

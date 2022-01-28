@@ -9,15 +9,15 @@ using TagLib;
 
 namespace TagDraco.Core
 {
-    class Writer
+    class TagWriter
     {
         public const string TEMP_FILE_NAME = "tagDracoTemp.png";
 
-        public Writer()
+        public TagWriter()
         {
         }
 
-        ~Writer() {}
+        ~TagWriter() {}
 
         public bool UpdateFile(string path, Image cover, string title, string performers, string albumartists, string album, uint year, uint track, string genres)
         {
@@ -31,9 +31,11 @@ namespace TagDraco.Core
                 file.Tag.Track = track;
                 file.Tag.Genres = genres.Split(',');
                 SaveMetadataToFile(file, cover);
+                file.Dispose();
                 return true;
             }catch(Exception e)
-            {
+                { 
+
                 Console.WriteLine("[Writer] - An error occured while trying to save the tags : {0} {1}", e.Message, e.StackTrace);
                 MessageBox.Show("An error occured : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -56,12 +58,29 @@ namespace TagDraco.Core
                     file.Tag.Year = year;
                     SaveMetadataToFile(file, Cover);
                     index++;
+                    file.Dispose();
                 }
                 return true;
             }catch(Exception e)
             {
                 Console.WriteLine("[Writer] - An error occured while trying to save the tags on {2}\n: {0} {1}", e.Message, e.StackTrace, filePaths[index]);
                 MessageBox.Show("An error occured : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public bool UpdateTrackNumber(string filePath, uint track)
+        {
+            TagLib.File file = TagLib.File.Create(filePath);
+            try
+            {
+                file.Tag.Track = track;
+                file.Save();
+                file.Dispose();
+                return true;
+            }catch(Exception e)
+            {
+                MessageBox.Show("An error occured:\n" + e.Message);
                 return false;
             }
         }
@@ -78,7 +97,7 @@ namespace TagDraco.Core
                 }
                 file.Save();
                 Console.WriteLine("[Writer] - Succesfully saved tags for file {0}",file.Name);
-               
+                file.Dispose();
             }
             catch(Exception e)
             {

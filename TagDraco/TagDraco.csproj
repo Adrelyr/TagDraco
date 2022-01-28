@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Sorting.cs" />
-    <Compile Include="Core\Tags.cs" />
+    <Compile Include="Core\Tag.cs" />
     <Compile Include="Core\TrackPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -113,9 +113,9 @@
     <Compile Include="Core\Program.cs" />
     <Compile Include="GUI\TagDracoColors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Reader.cs" />
     <Compile Include="Core\PictureUtils.cs" />
-    <Compile Include="Core\Writer.cs" />
+    <Compile Include="Core\TagWriter.cs" />
+    <Compile Include="Core\TagManager.cs" />
     <EmbeddedResource Include="Core\TrackPanel.resx">
       <DependentUpon>TrackPanel.cs</DependentUpon>
     </EmbeddedResource>

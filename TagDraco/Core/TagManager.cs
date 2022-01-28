@@ -6,18 +6,18 @@ using System.Windows.Forms;
 
 namespace TagDraco.Core
 {
-    class Reader
+    class TagManager
     {
-        public List<Tags> tags { get; private set; } = new List<Tags>();
+        public List<Tag> Tags { get; private set; } = new List<Tag>();
         private PictureUtils pictureUtils = new PictureUtils();
 
-        public Reader()
+        public TagManager()
         {
             
         }
 
-        public void CreateTagLibFiles(List<string> filePaths){
-            tags.Capacity = filePaths.Count;
+        public void RetrieveTagsFromFiles(List<string> filePaths){
+            Tags.Capacity = filePaths.Count;
             bool didSomeFilesFail = false;
             List<string> failedFiles = null;
             foreach (string path in filePaths)
@@ -34,7 +34,7 @@ namespace TagDraco.Core
                     continue;
                 }
                 
-                Tags fileTags = new Tags();
+                Tag fileTags = new Tag();
                 fileTags.Title = file.Tag.Title;
                 fileTags.Year = file.Tag.Year;
                 fileTags.Album = file.Tag.Album;
@@ -48,7 +48,7 @@ namespace TagDraco.Core
                 }
                 fileTags.FilePath = path;
 
-                tags.Add(fileTags);
+                Tags.Add(fileTags);
                 file.Dispose();
             }
             filePaths.Clear();
@@ -65,7 +65,7 @@ namespace TagDraco.Core
 
         public void SortByTrackNumberAsc()
         {
-            tags.Sort(delegate (Tags x, Tags y)
+            Tags.Sort(delegate (Tag x, Tag y)
             {
                 if (x.Track < y.Track)
                     return -1;
@@ -78,7 +78,7 @@ namespace TagDraco.Core
 
         public void SortByTrackNumberDesc()
         {
-            tags.Sort(delegate (Tags x, Tags y)
+            Tags.Sort(delegate (Tag x, Tag y)
             {
                 if (x.Track < y.Track)
                     return 1;
@@ -89,6 +89,11 @@ namespace TagDraco.Core
             });
         }
 
+        public Tag GetTagsAtIndex(int index)
+        {
+            return Tags[index];
+        }
+
         public File GetTagFileFromPath(string path)
         {
             return File.Create(path);
@@ -96,10 +101,10 @@ namespace TagDraco.Core
 
         public void ClearFiles()
         {
-            foreach(Tags tag in tags) tag.Dispose();
-            tags.Clear(); 
+            foreach(Tag tag in Tags) tag.Dispose();
+            Tags.Clear(); 
         }
 
-        ~Reader(){}
+        ~TagManager(){}
     }
 }

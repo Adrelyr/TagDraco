@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace TagDraco.Core
 {
-    public class Tags : IDisposable
+    public class Tag : IDisposable
     {
         public string   Album               { get; set; } = string.Empty;
         public string   Title               { get; set; } = string.Empty;
@@ -16,18 +16,17 @@ namespace TagDraco.Core
         public Image    AlbumCover          { get; set; } = null;
         public string   FilePath            { get; set; } = string.Empty;
 
-        public Tags()
+        public Tag()
         {
 
         }
 
-        ~Tags()
+        ~Tag()
         {
             AlbumCover.Dispose();
-            Debug.WriteLine("Tag has been yeeted");
         }
 
-        public Tags(string Album, string Title, string[] Artists, string[] ContributingArtists, uint Year, uint Track, string[] Genres, Image AlbumCover, string FilePath)
+        public Tag(string Album, string Title, string[] Artists, string[] ContributingArtists, uint Year, uint Track, string[] Genres, Image AlbumCover, string FilePath)
         {
             try
             {
