@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
 using TagLib;
 
 namespace TagDraco.Core
@@ -14,22 +12,29 @@ namespace TagDraco.Core
         public Image ResizeImage(Image imgToResize, int sizeW, int sizeH)
         {
             if (imgToResize == null) return null;
-            float nPercentW = sizeW / (float)imgToResize.Width;
-            float nPercentH = sizeH / (float)imgToResize.Height;
-            float nPercent;
-            if (nPercentH < nPercentW)
-                nPercent = nPercentH;
-            else
-                nPercent = nPercentW;
-            int destWidth = (int)(imgToResize.Width * nPercent);
-            int destHeight = (int)(imgToResize.Height * nPercent);
-            Bitmap b = new Bitmap(destWidth, destHeight);
-            Graphics g = Graphics.FromImage(b);
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
-            g.Dispose();
-            //imgToResize.Dispose();
-            return b;
+            try
+            {
+                float nPercentW = sizeW / (float)imgToResize.Width;
+                float nPercentH = sizeH / (float)imgToResize.Height;
+                float nPercent;
+                if (nPercentH < nPercentW)
+                    nPercent = nPercentH;
+                else
+                    nPercent = nPercentW;
+                int destWidth = (int)(imgToResize.Width * nPercent);
+                int destHeight = (int)(imgToResize.Height * nPercent);
+                Bitmap b = new Bitmap(destWidth, destHeight);
+                Graphics g = Graphics.FromImage(b);
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(imgToResize, 0, 0, destWidth, destHeight);
+                g.Dispose();
+                //imgToResize.Dispose();
+                return b;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public Bitmap ResizeImage2(Image image, int width, int height)
@@ -62,7 +67,7 @@ namespace TagDraco.Core
             try
             {
                 MemoryStream ms = new MemoryStream(p.Data.Data);
-                
+
                 Image img = ResizeImage(Image.FromStream(ms), size, size);
                 ms.Dispose();
                 return img;

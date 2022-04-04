@@ -88,7 +88,7 @@ namespace TagDraco.Core
         private void SaveMetadataToFile(TagLib.File file, Image cover)
         {
             try {
-                if (!cover.Equals(null)) { 
+                if (cover!=(null)) { 
                     string fileName = Path.GetTempPath() + TEMP_FILE_NAME;
                     cover.Save(fileName, ImageFormat.Png);
                     Picture picture = new Picture(fileName);

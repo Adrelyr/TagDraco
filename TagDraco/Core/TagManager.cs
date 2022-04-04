@@ -16,6 +16,14 @@ namespace TagDraco.Core
             
         }
 
+        /// <summary>
+        /// Creates a list of Tag for each of the tags contained in filePaths<br></br>
+        /// It creates files from the Taglib library and retrieves the information used by the tools<br></br>
+        /// and puts them in the custom Tag class I made. This is for memory usage, since the Taglib class<br></br>
+        /// is quite heavy.
+        /// </summary>
+        /// <param name="filePaths"></param>
+        /// 
         public void RetrieveTagsFromFiles(List<string> filePaths){
             Tags.Capacity = filePaths.Count;
             bool didSomeFilesFail = false;

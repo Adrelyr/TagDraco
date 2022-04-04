@@ -155,6 +155,8 @@
     <None Include="Resources\clear %28Custom%29.png" />
     <None Include="Resources\about %28Custom%29.png" />
     <None Include="Resources\loading2.gif" />
+    <None Include="Resources\options.png" />
+    <None Include="Resources\tag.png" />
     <Content Include="tagdraco2.ico" />
     <None Include="Resources\TagDraco_Help 16.png" />
     <None Include="Resources\TagDraco_File 16.png" />

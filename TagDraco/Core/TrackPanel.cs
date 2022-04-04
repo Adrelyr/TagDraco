@@ -165,12 +165,12 @@ namespace TagDraco.Core
 
         void OnHover(object sender, EventArgs e)
         {
-            BackColor = TagDracoColors.LightBlay;
+           BackColor = TagDracoColors.LightBlay;
         }
 
         void OnExit(object sender, EventArgs e)
         {
-            BackColor = TagDracoColors.Blay;
+           BackColor = TagDracoColors.Blay;
         }
 
         void OnClick(object sender, MouseEventArgs e)

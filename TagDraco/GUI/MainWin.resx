@@ -132,16 +132,6 @@
         RK5CYII=
 </value>
   </data>
-  <data name="helpToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAPJJREFUOE9joApQUfFg1zO0WQnC+obWq7FhPQPrxUZGtpJQLajA2NiYS9/Q5j9h
-        bH3PwMBOFaoNAYg3wOa/nqH1K0NDKxOoVgiwt7dn0TOwycOJDa1Pohpic4GBoZ4Jqh0VgFyDjPUMrTKA
-        mv7BDTCwvqttYisLVY4JgIp+whVjYOt7xsbWclCl2AFQIQ4DiNAMAkDFGAYAw+C+oaGlPFQJfoBsgIGB
-        jZaZmRkfKJ1ApQkDoFOnARPNTBDW0rIQggoTD/T1bROATk4CYz1Xbqgw8QBo82+YF4gKNHRAsQH6Bjab
-        gCltKwgDA1EUKkwrwMAAALynjYgjyuZPAAAAAElFTkSuQmCC
-</value>
-  </data>
   <data name="openToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -161,11 +151,27 @@
         rkJggg==
 </value>
   </data>
+  <data name="helpToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAPJJREFUOE9joApQUfFg1zO0WQnC+obWq7FhPQPrxUZGtpJQLajA2NiYS9/Q5j9h
+        bH3PwMBOFaoNAYg3wOa/nqH1K0NDKxOoVgiwt7dn0TOwycOJDa1Pohpic4GBoZ4Jqh0VgFyDjPUMrTKA
+        mv7BDTCwvqttYisLVY4JgIp+whVjYOt7xsbWclCl2AFQIQ4DiNAMAkDFGAYAw+C+oaGlPFQJfoBsgIGB
+        jZaZmRkfKJ1ApQkDoFOnARPNTBDW0rIQggoTD/T1bROATk4CYz1Xbqgw8QBo82+YF4gKNHRAsQH6Bjab
+        gCltKwgDA1EUKkwrwMAAALynjYgjyuZPAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <metadata name="coverBoxCtxMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>564, 17</value>
+  </metadata>
   <metadata name="imageBrowser.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>272, 17</value>
   </metadata>
   <metadata name="folderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>401, 17</value>
+  </metadata>
+  <metadata name="saveCoverDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>714, 17</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
