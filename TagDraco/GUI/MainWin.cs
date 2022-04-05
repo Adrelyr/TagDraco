@@ -275,10 +275,9 @@ namespace TagDraco.GUI
             tags.Track        = Convert.ToUInt32(trackBox.Text);
             tags.Genres       = genreBox.Text.Split(',');
 
-            selectedTrackPanel.CoverBox.Image = utils.ResizeImage(albumCover, 24, 24);
-
             tagManager.Tags[selectedTrackPanel.TagIndex] = tags;
 
+            selectedTrackPanel.UpdatePicture();
             selectedTrackPanel.Update();
             tags.Dispose();
         } 

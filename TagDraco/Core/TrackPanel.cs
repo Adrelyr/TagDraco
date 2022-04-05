@@ -30,7 +30,7 @@ namespace TagDraco.Core
 
         public EventHandler TrackPanelClicked;
 
-        public PictureBox CoverBox { get; } = new PictureBox();
+        public PictureBox CoverBox { get; set; } = new PictureBox();
 
         private PictureUtils pictureUtils { get; set; } = new PictureUtils();
         private TagManager tagManager { get; set; }
@@ -48,10 +48,10 @@ namespace TagDraco.Core
             Padding = PADDING;
 
             Dictionary<uint, Image> hashCodes = new Dictionary<uint, Image>();
-
+            Image fromTags = tags.AlbumCover;
             
             CoverBox.Size = IMG_SIZE;
-            Image img = pictureUtils.ResizeImage(tags.AlbumCover, IMG_SIZE.Width, IMG_SIZE.Height);
+            Image img = pictureUtils.ResizeImage(fromTags, IMG_SIZE.Width, IMG_SIZE.Height);
             CoverBox.Image = img;
             CoverBox.Location = IMG_LOCATION;
 
@@ -134,6 +134,11 @@ namespace TagDraco.Core
             CtxMenu.MenuItems.Add(itemPlayInMP);
             CtxMenu.MenuItems.Add(itemShowPath);
             CtxMenu.MenuItems.Add(itemRemoveFromList);
+        }
+
+        public void UpdatePicture()
+        {
+            CoverBox.Image = tagManager.GetTagsAtIndex(TagIndex).AlbumCover;
         }
 
         private void OnRemoveClicked(object sender, EventArgs e)
