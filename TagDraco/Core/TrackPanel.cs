@@ -12,6 +12,14 @@ namespace TagDraco.Core
         readonly Size MAX_SIZE = new Size(4096, 46);
         readonly Size MIN_SIZE = new Size(256, 46);
         readonly Size IMG_SIZE = new Size(24, 24);
+        readonly string NO_TITLE_STRING = "No Title";
+        readonly int TEXT_LABELS_X_OFFSET = 56;
+        readonly int PATH_LABEL_Y_OFFSET = 24;
+        readonly int TITLE_LABEL_Y_OFFSET = 10;
+        readonly string PLAY_IN_PLAYER_MENU_STRING = "Open in music player";
+        readonly string REMOVE_FROM_LIST_MENU_STRING = "Remove from list";
+        readonly string OPEN_IN_EXPLORER_MENU_STRING = "Show in explorer";
+        readonly string EXPLORER = "explorer.exe";
 
         readonly Padding PADDING = new Padding(10);
 
@@ -48,29 +56,28 @@ namespace TagDraco.Core
             Padding = PADDING;
 
             Dictionary<uint, Image> hashCodes = new Dictionary<uint, Image>();
-            Image fromTags = tags.AlbumCover;
             
             CoverBox.Size = IMG_SIZE;
-            Image img = pictureUtils.ResizeImage(fromTags, IMG_SIZE.Width, IMG_SIZE.Height);
+            Image img = pictureUtils.ResizeImage(tags.AlbumCover, IMG_SIZE.Width, IMG_SIZE.Height);
             CoverBox.Image = img;
             CoverBox.Location = IMG_LOCATION;
 
             int displayedIndex = tagIndex+1;
             Color indexColor;
 
-            if (tags.Track != 0)
+            if (tags.Track != 0)                                                                                //Choses the color for the track index label. if set in metadata, gray. if not, yellow.
             {
                 displayedIndex = (int)tags.Track;
                 indexColor = Color.Gray;
             }
             else
             {
-                indexColor = Color.LightGreen;
+                indexColor = Color.Yellow;
             }
 
             IndexLabel = new Label
             {
-                Text = displayedIndex.ToString("###"),
+                Text = displayedIndex.ToString("D3"),                                                           // D3 used to get the track number formated to 001 instead of 1
                 AutoSize = true,
                 Location = IDX_LBL_LOCATION,
                 ForeColor = indexColor
@@ -78,9 +85,9 @@ namespace TagDraco.Core
 
             Label = new Label
             {
-                Text = tags.Title==string.Empty?"No Title" : tags.Title,
+                Text = tags.Title==string.Empty?NO_TITLE_STRING : tags.Title,
                 AutoSize = true,
-                Location = new Point(48, 10),
+                Location = new Point(TEXT_LABELS_X_OFFSET, TITLE_LABEL_Y_OFFSET),
                 ForeColor = tags.Title == string.Empty ? TagDracoColors.DarkBlite : Color.White
             };
 
@@ -89,7 +96,7 @@ namespace TagDraco.Core
                 Text = tags.FilePath,
                 AutoSize = true,
                 ForeColor = TagDracoColors.DarkBlite,
-                Location = new Point(48, 24)
+                Location = new Point(TEXT_LABELS_X_OFFSET, PATH_LABEL_Y_OFFSET)
             };
 
             MouseEventHandler clickHandler = new MouseEventHandler(OnClick);
@@ -102,36 +109,35 @@ namespace TagDraco.Core
             PathLabel.MouseEnter += hoverHandler;
             PathLabel.MouseLeave += exitHandler;
             PathLabel.MouseClick += clickHandler;
-
-            Controls.Add(CoverBox);
-            Controls.Add(IndexLabel);
-            Controls.Add(Label);
-            Controls.Add(PathLabel);
-
             MouseEnter += hoverHandler;
             MouseLeave += exitHandler;
             MouseClick += clickHandler;
 
-            MenuItem itemPlayInMP = new MenuItem()
+            Controls.Add(CoverBox);
+            Controls.Add(IndexLabel);
+            Controls.Add(Label);
+            Controls.Add(PathLabel);     
+
+            MenuItem itemPlayInMusicPlayer = new MenuItem()
             {
-                Text="Open in music player",
+                Text=PLAY_IN_PLAYER_MENU_STRING,
                 
             };
-            itemPlayInMP.Click += new EventHandler(OnPlayClicked);
+            itemPlayInMusicPlayer.Click += new EventHandler(OnPlayClicked);
 
             MenuItem itemShowPath = new MenuItem()
             {
-                Text = "Show in explorer",
+                Text = OPEN_IN_EXPLORER_MENU_STRING,
             };
             itemShowPath.Click += new EventHandler(OnPathClicked);
 
             MenuItem itemRemoveFromList = new MenuItem()
             {
-                Text = "Remove from list",
+                Text = REMOVE_FROM_LIST_MENU_STRING,
             };
             itemRemoveFromList.Click += new EventHandler(OnRemoveClicked);
 
-            CtxMenu.MenuItems.Add(itemPlayInMP);
+            CtxMenu.MenuItems.Add(itemPlayInMusicPlayer);
             CtxMenu.MenuItems.Add(itemShowPath);
             CtxMenu.MenuItems.Add(itemRemoveFromList);
         }
@@ -151,7 +157,7 @@ namespace TagDraco.Core
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 Arguments = tagManager.GetTagsAtIndex(TagIndex).FilePath,
-                FileName = "explorer.exe"
+                FileName = EXPLORER
             };
 
             Process.Start(startInfo);
@@ -162,7 +168,7 @@ namespace TagDraco.Core
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 Arguments = "/select,"+ tagManager.GetTagsAtIndex(TagIndex).FilePath,
-                FileName = "explorer.exe"
+                FileName = EXPLORER
             };
 
             Process.Start(startInfo);

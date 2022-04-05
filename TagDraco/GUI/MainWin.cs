@@ -126,7 +126,7 @@ namespace TagDraco.GUI
                 }
             }
             f.Dispose();
-            tags.Dispose();
+            //tags.Dispose();
         }
 
         /// <summary>
@@ -306,7 +306,7 @@ namespace TagDraco.GUI
                 tags.Track = Convert.ToUInt32(trackBox.Text);
                 tags.Genres = genreBox.Text.Split(',');
                 tagManager.Tags[panel.TagIndex] = tags;
-                panel.CoverBox.Image = tags.AlbumCover;
+                panel.UpdatePicture();
                 panel.Update();
                 progressBar.Value += 1;
                 tags.Dispose();

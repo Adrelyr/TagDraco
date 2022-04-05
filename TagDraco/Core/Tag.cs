@@ -23,7 +23,8 @@ namespace TagDraco.Core
 
         ~Tag()
         {
-            AlbumCover.Dispose();
+            if(AlbumCover != null)
+                AlbumCover.Dispose();
         }
 
         public Tag(string Album, string Title, string[] Artists, string[] ContributingArtists, uint Year, uint Track, string[] Genres, Image AlbumCover, string FilePath)
