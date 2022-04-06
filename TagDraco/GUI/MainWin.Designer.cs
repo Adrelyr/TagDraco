@@ -206,8 +206,9 @@ namespace TagDraco.GUI
             // 
             this.aboutToolStripMenuItem.Image = global::TagDraco.Properties.Resources.about__Custom_;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutMenuClicked);
             // 
             // groupBox1
             // 

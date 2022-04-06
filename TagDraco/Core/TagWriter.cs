@@ -11,7 +11,7 @@ namespace TagDraco.Core
 {
     class TagWriter
     {
-        public const string TEMP_FILE_NAME = "tagDracoTemp.png";
+        const string TEMP_FILE_NAME = "tagDracoTemp.png";
 
         public TagWriter()
         {
