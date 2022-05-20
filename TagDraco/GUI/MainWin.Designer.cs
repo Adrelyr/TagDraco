@@ -206,7 +206,7 @@ namespace TagDraco.GUI
             // 
             this.aboutToolStripMenuItem.Image = global::TagDraco.Properties.Resources.about__Custom_;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutMenuClicked);
             // 
@@ -494,9 +494,9 @@ namespace TagDraco.GUI
             "Track Number Ascending",
             "Track Number Descending",
             "File Alphabetical (A->Z)",
+            "Title Alphabetical (Z->A)",
             "Title Alphabetical (A->Z)",
-            "File Alphabetical (Z->A)",
-            "Title Alphabetical (Z->A)"});
+            "File Alphabetical (Z->A)"});
             this.sortComboBox.Location = new System.Drawing.Point(341, 47);
             this.sortComboBox.Name = "sortComboBox";
             this.sortComboBox.Size = new System.Drawing.Size(471, 21);

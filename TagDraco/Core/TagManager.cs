@@ -97,6 +97,22 @@ namespace TagDraco.Core
             });
         }
 
+        public void SortAlphabetically()
+        {
+            Tags.Sort(delegate (Tag x, Tag y)
+            {
+                return string.Compare(x.Title, y.Title, true);
+            });
+        }
+
+        public void SortAlphabeticallyReverse()
+        {
+            Tags.Sort(delegate (Tag x, Tag y)
+            {
+                return -string.Compare(x.Title, y.Title, true);
+            });
+        }
+
         public Tag GetTagsAtIndex(int index)
         {
             return Tags[index];

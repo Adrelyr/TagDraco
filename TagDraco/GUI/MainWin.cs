@@ -161,13 +161,16 @@ namespace TagDraco.GUI
         /// </summary>
         void SortFiles()
         {
-            if (sortComboBox.SelectedIndex == 0)
+            switch (sortComboBox.SelectedIndex)
             {
-                tagManager.SortByTrackNumberAsc();
-            }
-            else if (sortComboBox.SelectedIndex == 1)
-            {
-                tagManager.SortByTrackNumberDesc();
+                case 0: tagManager.SortByTrackNumberAsc();
+                    break;
+                case 1: tagManager.SortByTrackNumberDesc();
+                    break;
+                case 2: tagManager.SortAlphabetically();
+                    break;
+                case 3: tagManager.SortAlphabeticallyReverse();
+                    break;
             }
 
             PopulateMainPanel();
@@ -272,7 +275,9 @@ namespace TagDraco.GUI
         }
 
         private void ChangeCoverClicked(object sender, EventArgs e)
-        {
+        {   
+            //event fired when clicking on the change image cover then saves the current path so it can be opened again on
+            //the next click
             imageBrowser.InitialDirectory = Properties.Settings.Default.lastImagePath;
             if (imageBrowser.ShowDialog() == DialogResult.OK)
             {
@@ -345,10 +350,8 @@ namespace TagDraco.GUI
                 Core.Tag tags = tagManager.GetTagsAtIndex(panel.TagIndex);
                 paths.Append(tags.FilePath);
                 tags.AlbumCover = utils.ResizeImage(albumCover, TAG_ALBUM_COVER_SIZE, TAG_ALBUM_COVER_SIZE);
-                tags.TrackArtists = trackArtistsBox.Text.Split(',');
                 tags.AlbumArtists = artistBox.Text.Split(',');
                 tags.Year = Convert.ToUInt32(yearBox.Text);
-                tags.Track = Convert.ToUInt32(trackBox.Text);
                 tags.Genres = genreBox.Text.Split(',');
                 tagManager.Tags[panel.TagIndex] = tags;
                 panel.UpdatePicture();
@@ -370,10 +373,12 @@ namespace TagDraco.GUI
         private void MainGUI_KeyDown(object sender, KeyEventArgs e)
         {
             //Updates the track with a keystroke instead of clicking the button
+            //ctrl-s for single track saving
             if (e.Control && e.KeyCode == Keys.S)
             {
                 UpdateTrack(null, null);
             }
+            //ctrl-shift-s for the album saving
             else if (e.Control && e.Shift && e.KeyCode == Keys.S)
             {
                 UpdateAlbum(null, null);
