@@ -34,6 +34,8 @@ namespace TagDraco.Core
 
         public int TagIndex { get; set; }
 
+        public bool selected { get; set; } = false;
+
         public ContextMenu CtxMenu { get; } = new ContextMenu();
 
         public EventHandler TrackPanelClicked;
@@ -45,6 +47,7 @@ namespace TagDraco.Core
 
         public TrackPanel(int tagIndex, Tag tags, TagManager manager)
         {
+            
             BackColor = TagDracoColors.Blay;
 
             TagIndex = tagIndex;
@@ -106,6 +109,12 @@ namespace TagDraco.Core
             Label.MouseEnter += hoverHandler;
             Label.MouseLeave += exitHandler;
             Label.MouseClick += clickHandler;
+            CoverBox.MouseEnter += hoverHandler;
+            CoverBox.MouseLeave += exitHandler;
+            CoverBox.MouseClick += clickHandler;
+            IndexLabel.MouseEnter += hoverHandler;
+            IndexLabel.MouseLeave += exitHandler;
+            IndexLabel.MouseClick += clickHandler;
             PathLabel.MouseEnter += hoverHandler;
             PathLabel.MouseLeave += exitHandler;
             PathLabel.MouseClick += clickHandler;
@@ -176,18 +185,20 @@ namespace TagDraco.Core
 
         void OnHover(object sender, EventArgs e)
         {
-           BackColor = TagDracoColors.LightBlay;
+
+            BackColor = selected ? TagDracoColors.LightererBlay : TagDracoColors.LighterBlay;
         }
 
         void OnExit(object sender, EventArgs e)
         {
-           BackColor = TagDracoColors.Blay;
+            BackColor = selected ? TagDracoColors.LighterBlay : TagDracoColors.Blay;
         }
 
         void OnClick(object sender, MouseEventArgs e)
         {
+            selected=true;
             if (e.Button.Equals(MouseButtons.Left)){
-                BackColor = TagDracoColors.LighterBlay;
+                ColorSelect();
             }
             else if(e.Button.Equals(MouseButtons.Right))
             {
@@ -199,6 +210,18 @@ namespace TagDraco.Core
         protected virtual void OnTrackPanelClicked(EventArgs e)
         {
             TrackPanelClicked.Invoke(this, e);
+        }
+
+        public void ColorDeselect()
+        {
+            selected = false;
+            BackColor = TagDracoColors.Blay;
+        }
+
+        public void ColorSelect()
+        {
+            selected = true;
+            BackColor = TagDracoColors.LightererBlay;
         }
     }
 }

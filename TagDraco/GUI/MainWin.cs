@@ -230,11 +230,15 @@ namespace TagDraco.GUI
         {
             //resets the fancy border on the previously clicked trackPanel
             if(selectedTrackPanel != null)
-                selectedTrackPanel.BorderStyle = BorderStyle.None;
+            {
+                //selectedTrackPanel.BorderStyle = BorderStyle.None;
+                selectedTrackPanel.ColorDeselect();
+            }
+                
 
             //Retrieves the selected trackPanel and puts a fancy border around it
             TrackPanel trackPanel = (TrackPanel)sender;
-            trackPanel.BorderStyle = BorderStyle.FixedSingle;
+            //trackPanel.BorderStyle = BorderStyle.FixedSingle;
 
             selectedTrackPanel = trackPanel;
             
@@ -327,13 +331,39 @@ namespace TagDraco.GUI
             //Updates the trackPanel withe the new information
             selectedTrackPanel.UpdatePicture();
             selectedTrackPanel.Update();
-        } 
-        
+        }
+
         private void UpdateAlbum(object sender, EventArgs e)
         {
-            //do nothing id nothing is loaded
-            if (mainPanel.Controls.Count == 0 || selectedTrackPanel == null)
+            if (mainPanel.Controls.Count == 0)
                 return;
+
+            List<string> paths = new List<string>();
+            
+            foreach (TagDraco.Core.Tag t in tagManager.Tags)
+            {
+                paths.Add(t.FilePath);
+            }
+
+            Console.WriteLine(paths.Count());
+            AlbumUpdateWin albumUpdateWin = new AlbumUpdateWin(new TagWriter(), paths);
+            albumUpdateWin.ShowDialog(this);
+            
+            if (albumUpdateWin.success == 1) {
+                Clear(false);
+                PopulateMainPanel();
+                //albumUpdateWin.Dispose();
+            }
+            else if(albumUpdateWin.success == 2)
+            {
+                MessageBox.Show("ye it no worked");
+            }
+
+            //TODO fix updating of tags after album update
+
+            /*
+            //do nothing id nothing is loaded
+            
 
             //prepares for updating a few files
             progressBar.Value = 0;
@@ -342,13 +372,7 @@ namespace TagDraco.GUI
 
             //Creates an instance of the TagWriter
             TagWriter writer = new TagWriter();
-            string[] paths = new string[mainPanel.Controls.Count];
-            foreach(Control c in mainPanel.Controls)
-            {
-                //Retrieves the track panel and the path contained at its index in the tagList, then retrieves the album info from the detail box
-                TrackPanel panel = c as TrackPanel;
-                Core.Tag tags = tagManager.GetTagsAtIndex(panel.TagIndex);
-                paths.Append(tags.FilePath);
+            
                 tags.AlbumCover = utils.ResizeImage(albumCover, TAG_ALBUM_COVER_SIZE, TAG_ALBUM_COVER_SIZE);
                 tags.AlbumArtists = artistBox.Text.Split(',');
                 tags.Year = Convert.ToUInt32(yearBox.Text);
@@ -367,7 +391,7 @@ namespace TagDraco.GUI
                 artistBox.Text,
                 albumCover,
                 Convert.ToUInt32(yearBox.Text),
-                genreBox.Text);
+                genreBox.Text);*/
         }
 
         private void MainGUI_KeyDown(object sender, KeyEventArgs e)

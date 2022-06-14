@@ -9,7 +9,7 @@ using TagLib;
 
 namespace TagDraco.Core
 {
-    class TagWriter
+    public class TagWriter
     {
         const string TEMP_FILE_NAME = "tagDracoTemp.png";
 
@@ -43,18 +43,18 @@ namespace TagDraco.Core
             
         }
 
-        public bool UpdateAlbum(string[] filePaths, string albumName, string performers, string artist, Image Cover, uint year, string genre)
+        public bool UpdateAlbum(List<string> paths, string albumName, string performers, Image Cover, ushort year)
         {
             int index = 0;
             try {
                 
-                foreach (string path in filePaths)
+                foreach (string path in paths)
                 {
+                    Console.WriteLine("skdoosh");
                     TagLib.File file = TagLib.File.Create(path);
                     file.Tag.Album = albumName;
                     file.Tag.Performers = performers.Split(',');
-                    file.Tag.AlbumArtists = artist.Split(',');
-                    file.Tag.Genres = genre.Split(',');
+                    file.Tag.AlbumArtists = performers.Split(',');
                     file.Tag.Year = year;
                     SaveMetadataToFile(file, Cover);
                     index++;
@@ -63,7 +63,7 @@ namespace TagDraco.Core
                 return true;
             }catch(Exception e)
             {
-                Console.WriteLine("[Writer] - An error occured while trying to save the tags on {2}\n: {0} {1}", e.Message, e.StackTrace, filePaths[index]);
+                Console.WriteLine("[Writer] - An error occured while trying to save the tags on {2}\n: {0} {1}", e.Message, e.StackTrace, paths[index]);
                 MessageBox.Show("An error occured : " + e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

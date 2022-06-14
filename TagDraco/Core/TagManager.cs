@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace TagDraco.Core
 {
-    class TagManager
+    public class TagManager
     {
         public List<Tag> Tags { get; private set; } = new List<Tag>();
         private PictureUtils pictureUtils = new PictureUtils();

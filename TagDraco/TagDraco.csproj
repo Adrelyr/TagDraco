@@ -104,6 +104,12 @@
     <Compile Include="Core\TrackPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="GUI\AlbumUpdateWin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\AlbumUpdateWin.Designer.cs">
+      <DependentUpon>AlbumUpdateWin.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\MainWin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +124,9 @@
     <Compile Include="Core\TagManager.cs" />
     <EmbeddedResource Include="Core\TrackPanel.resx">
       <DependentUpon>TrackPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\AlbumUpdateWin.resx">
+      <DependentUpon>AlbumUpdateWin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainWin.resx">
       <DependentUpon>MainWin.cs</DependentUpon>
